@@ -5,12 +5,19 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "update-storyblok": "storyblok pull-components --space=82895 && storyblok-generate-ts source=./components.82895.json target=./src/typings/__generated__/components-schema.ts"
   },
   "dependencies": {
+    "lumen-cms-core": "^0.97.0",
     "next": "12.0.3",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "react-moralis": "^0.2.8",
+    "storyblok-generate-ts": "^1.3.0"
+  },
+  "peerDependencies": {
+    "lumen-cms-core": ">=0.97.0"
   },
   "devDependencies": {
     "@types/node": "16.11.6",

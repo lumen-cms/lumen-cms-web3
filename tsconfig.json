@@ -13,7 +13,25 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+    "baseUrl": "./",
+    "paths": {
+      "@polyfills": [
+        "node_modules/lumen-cms-core/client/polyfills.js"
+      ],
+      "@LmComponentRender": [
+        "node_modules/lumen-cms-core/src/components/CoreComponents.tsx"
+      ],
+      "@CONFIG": [
+        "node_modules/lumen-cms-core/src/utils/config.ts"
+      ],
+      "@SSR_CONFIG": [
+        "node_modules/lumen-cms-core/src/utils/initial-props/ssrConfig"
+      ],
+      "@context/*": [
+        "node_modules/lumen-cms-core/src/components/provider/context/*"
+      ]
+    }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

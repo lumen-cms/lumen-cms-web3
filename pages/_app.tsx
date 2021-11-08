@@ -1,8 +1,2 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
+export { LmDefaultApp as default } from 'lumen-cms-core'
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
-}
-
-export default MyApp
