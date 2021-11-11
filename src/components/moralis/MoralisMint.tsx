@@ -4,7 +4,7 @@ import useContract from './hooks/useContract'
 
 
 export default function MoralisMint(content: MoralisMintStoryblok) {
-  const { user, isWeb3Enabled, web3EnableError, getContract,getContractDetails } = useContract()
+  const { user, isWeb3Enabled, web3EnableError, contractNft } = useContract()
   const username = user?.getUsername()
   if (!username) {
     if (!content.fallback_login_message?.length) {
@@ -34,11 +34,11 @@ export default function MoralisMint(content: MoralisMintStoryblok) {
     )
   }
 
-  if (isWeb3Enabled) {
-    getContractDetails()
+  if (contractNft) {
+
     return (
       <div>
-
+        <div>{JSON.stringify(contractNft.contractDescription, null, 2)}</div>
         <LmComponentRender
           content={{
             component: 'button',
@@ -46,8 +46,7 @@ export default function MoralisMint(content: MoralisMintStoryblok) {
             label: 'Mint'
           } as ButtonStoryblok}
           onClick={async () => {
-            const contract = await getContract()
-
+            const contract = await contractNft.contract
             if (contract) {
               contract.methods.mint(1).send()
               console.log('inside of mint')

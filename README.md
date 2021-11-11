@@ -3,3 +3,18 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 ## Getting Started
 
 http://localhost:3000/demo-content/moralis
+
+## Testnet
+
+### OpenSea
+
+```Rinkeby | Mumbai | Baobab```
+
+### Etherscan
+
+```Rinkeby | Ropsten | Kovan```
+
+### Polygon
+
+https://mumbai.polygonscan.com/
+https://faucet.polygon.technology/

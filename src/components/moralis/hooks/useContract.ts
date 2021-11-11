@@ -1,6 +1,7 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useMoralis } from 'react-moralis'
 import { Contract } from 'web3-eth-contract'
+import useSWR from 'swr'
 
 const ABI = process.env.NEXT_PUBLIC_ABI ? JSON.parse(process.env.NEXT_PUBLIC_ABI) : []
 
@@ -17,21 +18,80 @@ getCurrentCost
 walletOfOwner(walletOfOwner)
 isWhitelisted(walletOfUser)
  */
-const valuesOfContract = ['preSaleStartDate',
-  'preSaleEndDate',
-  'publicSaleDate',
-  'paused',
-  'maxMintAmountPresale',
-  'maxMintAmount',
-  'preSaleCost',
-  'cost',
-  'getCurrentCost']
 
+const ABI_URL: string = process.env.NEXT_PUBLIC_ABI_URI as string + process.env.NEXT_PUBLIC_MORALIS_CONTRACT_ADDRESS as string
+
+const fetcher = async (url: string) => {
+  const result = await fetch(url)
+  if (result.ok) {
+    const values = await result.json()
+    return values.result?.[0].ABI
+  } else {
+    return null
+  }
+}
+
+type ContractNft = {
+  contract?: Contract,
+  contractDescription?: {
+    preSaleStartDate: string
+    preSaleEndDate: string
+    publicSaleDate: string
+    paused: boolean
+    maxMintAmountPresale: boolean
+    maxMintAmount: boolean
+    cost: string
+    preSaleCost: string
+    getCurrentCost: string
+    isWhitelisted: string
+    revealed: boolean
+    maxSupply: string
+    preSaleMaxSupply: string
+    walletOfOwner: string
+  }
+}
 export default function useContract() {
   const contractRef = useRef<Contract | null>()
   const { user, web3, isWeb3EnableLoading, isWeb3Enabled, web3EnableError, enableWeb3, isLoggingOut } =
     useMoralis()
+  const { data, isValidating, error } = useSWR(ABI_URL, fetcher)
   const eth = web3?.eth
+  const [contractNft, setContract] = useState<ContractNft>()
+  useEffect(
+    () => {
+      if (eth && data) {
+        const init = async () => {
+          const contract = new eth.Contract(ABI, process.env.NEXT_PUBLIC_MORALIS_CONTRACT_ADDRESS)
+          const accounts = await eth.getAccounts()
+          let currentUser = accounts?.[0]
+          contract.options.from = currentUser
+          setContract({
+            contract,
+            contractDescription: {
+              preSaleStartDate: await contract.methods.preSaleStartDate().call(),
+              preSaleEndDate: await contract.methods.preSaleEndDate().call(),
+              publicSaleDate: await contract.methods.publicSaleDate().call(),
+              paused: await contract.methods.paused().call(),
+              maxMintAmountPresale: await contract.methods.maxMintAmountPresale().call(),
+              maxMintAmount: await contract.methods.maxMintAmount().call(),
+              cost: await contract.methods.cost().call(),
+              preSaleCost: await contract.methods.preSaleCost().call(),
+              getCurrentCost: await contract.methods.getCurrentCost().call(),
+              isWhitelisted: await contract.methods.isWhitelisted(currentUser).call(),
+              revealed: await contract.methods.revealed().call(),
+              maxSupply: await contract.methods.maxSupply().call(),
+              preSaleMaxSupply: await contract.methods.preSaleMaxSupply().call(),
+              walletOfOwner: await contract.methods.walletOfOwner(currentUser).call()
+            }
+          })
+        }
+        init()
+      }
+    }, [data, eth]
+  )
+  if (error) {
+    console.error(error)
+  }
   useEffect(() => {
     if (isLoggingOut) {
       contractRef.current = null
@@ -45,46 +105,5 @@ export default function useContract() {
     }
   }, [isWeb3EnableLoading, isWeb3Enabled])
 
-
-  const getContractDetails = async () => {
-    const contract = await getContract()
-    if (contract) {
-      try {
-console.log("hier")
-        const res = await contract.methods.preSaleStartDate().call()
-console.log("dort")
-        console.log(res)
-      } catch (e) {
-        console.error()
-      }
-
-      // valuesOfContract.forEach(async key => {
-      //   let method = contract.methods[key]
-      //   console.log(typeof method)
-      //   const res = await method().call()
-      //   console.log(res)
-      // })
-    }
-  }
-
-  const getContract = async () => {
-
-    if (contractRef.current) {
-      return contractRef.current
-    }
-    if (eth) {
-      const contract = new eth.Contract(ABI, process.env.NEXT_PUBLIC_MORALIS_CONTRACT_ADDRESS)
-      const accounts = await eth.getAccounts()
-      // if (process.env.NODE_ENV === 'development') {
-      //   contract.options.gasPrice = '0'
-      // }
-      contract.options.from = accounts?.[0]
-      contractRef.current = contract
-      return contract
-    } else {
-      console.warn('web3 eth not ready yet')
-    }
-  }
-
-  return { user, web3EnableError, isWeb3Enabled, getContract, getContractDetails }
+  return { user, web3EnableError, isWeb3Enabled, contractNft }
 }
