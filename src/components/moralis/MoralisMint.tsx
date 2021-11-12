@@ -1,6 +1,7 @@
 import { ButtonStoryblok, HeadlineStoryblok, MoralisMintStoryblok } from '../../typings/__generated__/components-schema'
 import { LmComponentRender } from '@LmComponentRender'
 import useContract from './hooks/useContract'
+import { TextField } from '@material-ui/core'
 
 
 export default function MoralisMint(content: MoralisMintStoryblok) {
@@ -33,30 +34,58 @@ export default function MoralisMint(content: MoralisMintStoryblok) {
       } as HeadlineStoryblok} />
     )
   }
-
-  if (contractNft) {
-
+  if (!contractNft) {
+    return (
+      <div>loading...</div>
+    )
+  }
+  const { contract, contractDescription } = contractNft
+  if (contractDescription && contract) {
+    if (contractDescription.isPreSale && !contractDescription.isWhitelisted) {
+      return (
+        <div>you are not whitelisted!</div>
+      )
+    }
     return (
       <div>
-        <div>{JSON.stringify(contractNft.contractDescription, null, 2)}</div>
-        <LmComponentRender
-          content={{
-            component: 'button',
-            _uid: 'mint_button_' + content._uid,
-            label: 'Mint'
-          } as ButtonStoryblok}
-          onClick={async () => {
-            const contract = await contractNft.contract
-            if (contract) {
-              contract.methods.mint(1).send()
-              console.log('inside of mint')
-            }
-
-
-            // const endSale = await contract?.methods.preSaleEndDate()
-            //
-            // const res = await contract?.methods.mint(1)
-          }} />
+        <div
+          style={{ display: 'flex', alignItems: 'center', alignContent: 'center', flexDirection: 'row', gap: '8px' }}>
+          {contractDescription.canPurchaseAmount > 1 && (
+            <TextField type={'number'} id={'lm-mint-amount'}
+                       defaultValue={1}
+                       style={{
+                         minWidth: `55px`
+                       }}
+                       onBlur={event => {
+                         const blurVal = event.currentTarget.value
+                         if (blurVal && Number(blurVal) > contractDescription.canPurchaseAmount) {
+                           event.currentTarget.value = `${contractDescription.canPurchaseAmount}`
+                         }
+                       }}
+                       inputProps={{
+                         min: 1,
+                         max: contractDescription.canPurchaseAmount
+                       }} />
+          )}
+          <LmComponentRender
+            content={{
+              component: 'button',
+              _uid: 'mint_button_' + content._uid,
+              label: 'Mint'
+            } as ButtonStoryblok}
+            onClick={async () => {
+              const amount = (document.getElementById('lm-mint-amount') as HTMLInputElement)?.value
+              let selectedAmount = amount ? Number(amount) : 1
+              if (contract) {
+                try {
+                  contract.methods.mint(selectedAmount).send({ value: contractDescription.getCurrentCost })
+                  console.log('inside of mint')
+                } catch (e) {
+                  console.error(e)
+                }
+              }
+            }} />
+        </div>
       </div>
     )
   }

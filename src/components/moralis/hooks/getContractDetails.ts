@@ -1,11 +1,11 @@
 import { Contract } from 'web3-eth-contract'
-import { ContractNft } from '../moralisTypings'
+import { ContractDescription } from '../moralisTypings'
 import { Utils } from 'web3-utils'
 
 const CONFIG_CONTRACT = {
   contractDetailFunctions: ['preSaleStartDate', 'preSaleEndDate', 'publicSaleDate', 'paused',
     'maxMintAmountPresale', 'maxMintAmount', 'cost', 'preSaleCost', 'getCurrentCost', 'revealed', 'maxSupply',
-    'preSaleMaxSupply'],
+    'preSaleMaxSupply', 'totalSupply'],
   contractDetailWithUserFunctions: ['isWhitelisted', 'walletOfOwner'],
   preSale: {
     start: 'preSaleStartDate',
@@ -15,16 +15,16 @@ const CONFIG_CONTRACT = {
     start: 'publicSaleDate'
   },
   availableAmount: {
+    current: 'totalSupply',
     preSale: 'preSaleMaxSupply',
     sale: 'maxSupply'
   },
   cost: {
     preSale: 'preSaleCost',
-    sale: 'cost'
+    sale: 'cost',
+    current: 'getCurrentCost'
   }
 }
-
-type ContractDescription = ContractNft['contractDescription']
 
 const getValueFromObject = (obj: any, key: string, returnAsNumber?: boolean) =>
   returnAsNumber ? Number(obj[key]) : obj[key]
@@ -45,12 +45,29 @@ export default async function getContractDetails(contract: Contract, currentUser
   const contractDesc = {
     ...getterObj,
     ...getterObjWithUser,
-    isPreSale: dateNow >= getValueFromObject(getterObj, CONFIG_CONTRACT.preSale.start, true) && dateNow <= getValueFromObject(getterObj, CONFIG_CONTRACT.preSale.end, true),
+    isPreSale: dateNow >= getValueFromObject(getterObj, CONFIG_CONTRACT.preSale.start, true) && dateNow <= getValueFromObject(getterObj, CONFIG_CONTRACT.preSale.end, true) * 1000,
     isPublicSale: dateNow >= getValueFromObject(getterObj, CONFIG_CONTRACT.preSale.start, true),
-    isPreSaleSoldOut: getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.preSale, true) === 0,
-    isSaleSoldOut: getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.sale, true) === 0,
+    remainingPreSaleAmout: getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.preSale, true) - getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.current, true),
+    remainingSaleAmount: getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.sale, true) - getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.current, true),
     costEth: utils.fromWei(getValueFromObject(getterObj, CONFIG_CONTRACT.cost.sale)),
-    preSaleCostEth: utils.fromWei(getValueFromObject(getterObj, CONFIG_CONTRACT.cost.preSale))
+    preSaleCostEth: utils.fromWei(getValueFromObject(getterObj, CONFIG_CONTRACT.cost.preSale)),
+    currentCostEth: utils.fromWei(getValueFromObject(getterObj, CONFIG_CONTRACT.cost.current)),
+    canPurchaseAmount: 0
   } as ContractDescription
+  contractDesc.isPreSaleSoldOut = contractDesc.remainingPreSaleAmout === 0
+  contractDesc.isSaleSoldOut = contractDesc.remainingSaleAmount === 0
+  const currentWalletAmount = contractDesc.walletOfOwner.length
+  const maxMintPresale = Number(contractDesc.maxMintAmountPresale)
+  if (contractDesc.isPreSale) {
+    console.log("inside pre sale",contractDesc.isPreSaleSoldOut, contractDesc.remainingPreSaleAmout, maxMintPresale, currentWalletAmount)
+    if (!(contractDesc.isPreSaleSoldOut || !contractDesc.isWhitelisted || currentWalletAmount >= maxMintPresale)) {
+      contractDesc.canPurchaseAmount = contractDesc.remainingPreSaleAmout < maxMintPresale ? contractDesc.remainingPreSaleAmout - currentWalletAmount : maxMintPresale - currentWalletAmount
+    }
+  } else if (contractDesc.isPublicSale) {
+    const maxMint = Number(contractDesc.maxMintAmount)
+    if (!(contractDesc.isSaleSoldOut || currentWalletAmount >= maxMint)) {
+      contractDesc.canPurchaseAmount = contractDesc.remainingSaleAmount < maxMint ? contractDesc.remainingSaleAmount - currentWalletAmount : maxMint - currentWalletAmount
+    }
+  }
   return contractDesc
 }

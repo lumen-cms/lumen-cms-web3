@@ -2,18 +2,26 @@ import { useEffect, useRef, useState } from 'react'
 import { useMoralis } from 'react-moralis'
 import { Contract } from 'web3-eth-contract'
 import useSWR from 'swr'
-import { getContractAbi } from '../../../lib/getContractAbi'
 import getContractDetails from './getContractDetails'
 import { ContractNft } from '../moralisTypings'
 
-const ABI_URL: string = process.env.NEXT_PUBLIC_ABI_URI as string + process.env.NEXT_PUBLIC_MORALIS_CONTRACT_ADDRESS as string
+const pureFetch = async (url: string) => {
+  const result = await fetch(url)
+  if (result.ok) {
+    return await result.json()
+  }
+  return null
+}
 
 export default function useContract() {
   const contractRef = useRef<Contract | null>()
-  const { user, web3, isWeb3EnableLoading, isWeb3Enabled, web3EnableError, enableWeb3, isLoggingOut } =
+  const { user, web3, isWeb3EnableLoading, isWeb3Enabled, web3EnableError, enableWeb3, isLoggingOut, userError } =
     useMoralis()
-  const { data, isValidating, error } = useSWR(ABI_URL, getContractAbi)
+  const { data, isValidating, error } = useSWR('/api/get-abi', pureFetch)
   const [contractNft, setContract] = useState<ContractNft>()
+  if(userError){
+    console.log(userError)
+  }
   useEffect(
     () => {
       const eth = web3?.eth
@@ -21,21 +29,22 @@ export default function useContract() {
       if (eth && utils && data) {
         const init = async () => {
           const contract = new eth.Contract(typeof data === 'string' ? JSON.parse(data) : data, process.env.NEXT_PUBLIC_MORALIS_CONTRACT_ADDRESS)
-          console.log('hier')
           const accounts = await eth.getAccounts()
-          console.log('hier 2')
           let currentUser = accounts?.[0]
           contract.options.from = currentUser
+          contract.options.address = process.env.NEXT_PUBLIC_MORALIS_CONTRACT_ADDRESS as string
+          contract.defaultChain = process.env.NEXT_PUBLIC_MORALIS_CHAIN as any
           if (!contract.methods) {
             console.log('contract is not loaded', contract.methods)
             return
           }
-          console.log(contract.methods)
+          let contractDescription = await getContractDetails(contract, currentUser, utils)
+          // contract.options.value = contractDescription.currentCostEth
+          console.log(contractDescription)
           setContract({
             contract,
-            contractDescription: await getContractDetails(contract, currentUser, utils)
+            contractDescription
           })
-          console.log('hier 3')
         }
         init()
       }
