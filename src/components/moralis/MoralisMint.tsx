@@ -2,11 +2,13 @@ import { ButtonStoryblok, HeadlineStoryblok, MoralisMintStoryblok } from '../../
 import { LmComponentRender } from '@LmComponentRender'
 import useContract from './hooks/useContract'
 import { TextField } from '@material-ui/core'
+import { useState } from 'react'
 
 
 export default function MoralisMint(content: MoralisMintStoryblok) {
-  const { user, isWeb3Enabled, web3EnableError, contractNft } = useContract()
+  const { user, web3EnableError, contractNft } = useContract()
   const username = user?.getUsername()
+  const [error, setError] = useState<string>()
   if (!username) {
     if (!content.fallback_login_message?.length) {
       return <LmComponentRender content={{
@@ -39,11 +41,25 @@ export default function MoralisMint(content: MoralisMintStoryblok) {
       <div>loading...</div>
     )
   }
+  if (error) {
+    return (
+      <div>{error}</div>
+    )
+  }
   const { contract, contractDescription } = contractNft
   if (contractDescription && contract) {
     if (contractDescription.isPreSale && !contractDescription.isWhitelisted) {
       return (
-        <div>you are not whitelisted!</div>
+        <div>You are not whitelisted!</div>
+      )
+    } else if (!contractDescription.canPurchaseAmount) {
+      if (contractDescription.isPreSale) {
+        return (
+          <div>There are no Tokens left for you. Come back when the public sale starts!!</div>
+        )
+      }
+      return (
+        <div>There are no Tokens left for you.</div>
       )
     }
     return (
@@ -78,10 +94,16 @@ export default function MoralisMint(content: MoralisMintStoryblok) {
               let selectedAmount = amount ? Number(amount) : 1
               if (contract) {
                 try {
-                  contract.methods.mint(selectedAmount).send({ value: contractDescription.getCurrentCost })
-                  console.log('inside of mint')
-                } catch (e) {
-                  console.error(e)
+                  await contract.methods.mint(selectedAmount)
+                    .call({ value: contractDescription.getCurrentCost }) // check if it would work
+                  await contract.methods.mint(selectedAmount)
+                    .send({ value: contractDescription.getCurrentCost })
+                } catch (error: any) {
+                  console.error(error)
+                  debugger
+                  if (error?.message) {
+                    setError(error.message)
+                  }
                 }
               }
             }} />

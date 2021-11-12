@@ -1,30 +1,9 @@
 import { Contract } from 'web3-eth-contract'
 import { ContractDescription } from '../moralisTypings'
 import { Utils } from 'web3-utils'
-
-const CONFIG_CONTRACT = {
-  contractDetailFunctions: ['preSaleStartDate', 'preSaleEndDate', 'publicSaleDate', 'paused',
-    'maxMintAmountPresale', 'maxMintAmount', 'cost', 'preSaleCost', 'getCurrentCost', 'revealed', 'maxSupply',
-    'preSaleMaxSupply', 'totalSupply'],
-  contractDetailWithUserFunctions: ['isWhitelisted', 'walletOfOwner'],
-  preSale: {
-    start: 'preSaleStartDate',
-    end: 'preSaleEndDate'
-  },
-  publicSale: {
-    start: 'publicSaleDate'
-  },
-  availableAmount: {
-    current: 'totalSupply',
-    preSale: 'preSaleMaxSupply',
-    sale: 'maxSupply'
-  },
-  cost: {
-    preSale: 'preSaleCost',
-    sale: 'cost',
-    current: 'getCurrentCost'
-  }
-}
+import { CONFIG } from '@CONFIG'
+// @ts-ignore
+const CONFIG_CONTRACT = CONFIG.MORALIS_CONTRACT
 
 const getValueFromObject = (obj: any, key: string, returnAsNumber?: boolean) =>
   returnAsNumber ? Number(obj[key]) : obj[key]
@@ -59,7 +38,6 @@ export default async function getContractDetails(contract: Contract, currentUser
   const currentWalletAmount = contractDesc.walletOfOwner.length
   const maxMintPresale = Number(contractDesc.maxMintAmountPresale)
   if (contractDesc.isPreSale) {
-    console.log("inside pre sale",contractDesc.isPreSaleSoldOut, contractDesc.remainingPreSaleAmout, maxMintPresale, currentWalletAmount)
     if (!(contractDesc.isPreSaleSoldOut || !contractDesc.isWhitelisted || currentWalletAmount >= maxMintPresale)) {
       contractDesc.canPurchaseAmount = contractDesc.remainingPreSaleAmout < maxMintPresale ? contractDesc.remainingPreSaleAmout - currentWalletAmount : maxMintPresale - currentWalletAmount
     }

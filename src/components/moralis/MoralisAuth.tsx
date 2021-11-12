@@ -7,9 +7,10 @@ import {
 } from '../../typings/__generated__/components-schema'
 import { useMoralis } from 'react-moralis'
 
-export default function MoralisAuth(content: MoralisButtonStoryblok){
+export default function MoralisAuth(content: MoralisButtonStoryblok) {
   const { authenticate, isAuthenticating, user, logout, userError } =
     useMoralis()
+
   let username = user?.getUsername()
   if (userError?.message) {
     return <p>{userError.message}</p>
@@ -34,7 +35,7 @@ export default function MoralisAuth(content: MoralisButtonStoryblok){
               typography: 'headline6',
               ...headlineElement,
               text:
-                headlineElement?.text?.replace('{user}', username) || username
+                headlineElement?.text?.replace('{user}', username) || username.substr(0, 5) + '..'
             } as HeadlineStoryblok
           }
         />
@@ -64,7 +65,9 @@ export default function MoralisAuth(content: MoralisButtonStoryblok){
           ...loginElement
         } as ButtonStoryblok
       }
-      onClick={() => authenticate()}
+      onClick={() => {
+        authenticate()
+      }}
     />
   )
 }

@@ -14,7 +14,7 @@ export default function MoralisContent({ content }: MoralisProps) {
         if (block.component === 'moralis_button') {
           return <MoralisAuth {...block} key={block._uid} />
         } else if (block.component === 'moralis_mint') {
-          return <MoralisMint {...block} key={block._uid}/>
+          return <MoralisMint {...block} key={block._uid} />
         }
       })}
     </div>

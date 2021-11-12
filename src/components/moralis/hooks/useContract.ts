@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMoralis } from 'react-moralis'
-import { Contract } from 'web3-eth-contract'
 import useSWR from 'swr'
 import getContractDetails from './getContractDetails'
 import { ContractNft } from '../moralisTypings'
@@ -14,14 +13,11 @@ const pureFetch = async (url: string) => {
 }
 
 export default function useContract() {
-  const contractRef = useRef<Contract | null>()
   const { user, web3, isWeb3EnableLoading, isWeb3Enabled, web3EnableError, enableWeb3, isLoggingOut, userError } =
     useMoralis()
-  const { data, isValidating, error } = useSWR('/api/get-abi', pureFetch)
+  const { data, isValidating, error } = useSWR(isWeb3Enabled ? '/api/get-abi' : null, pureFetch)
   const [contractNft, setContract] = useState<ContractNft>()
-  if(userError){
-    console.log(userError)
-  }
+
   useEffect(
     () => {
       const eth = web3?.eth
@@ -50,14 +46,9 @@ export default function useContract() {
       }
     }, [data, web3]
   )
-  if (error) {
+  if (error || userError) {
     console.error(error)
   }
-  useEffect(() => {
-    if (isLoggingOut) {
-      contractRef.current = null
-    }
-  }, [isLoggingOut, contractRef.current])
 
   useEffect(() => {
     if (!isWeb3Enabled && !isWeb3EnableLoading) {
