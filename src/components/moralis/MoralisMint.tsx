@@ -49,16 +49,26 @@ export default function MoralisMint(content: MoralisMintStoryblok) {
   const { contract, contractDescription } = contractNft
   if (contractDescription && contract) {
     if (contractDescription.isPreSale && !contractDescription.isWhitelisted) {
-      return (
-        <div>You are not whitelisted!</div>
-      )
+      return content.fallback_not_whitelisted?.map(
+        blok => (
+          <LmComponentRender content={blok} key={blok._uid} />
+        )
+      ) || <div>You are not whitelisted!</div>
     } else if (!contractDescription.canPurchaseAmount) {
       if (contractDescription.isPreSale) {
-        return (
+        return content.fallback_presale?.map(
+          blok => (
+            <LmComponentRender content={blok} key={blok._uid} />
+          )
+        ) || (
           <div>There are no Tokens left for you. Come back when the public sale starts!!</div>
         )
       }
-      return (
+      return content.fallback_sale?.map(
+        blok => (
+          <LmComponentRender content={blok} key={blok._uid} />
+        )
+      ) || (
         <div>There are no Tokens left for you.</div>
       )
     }
