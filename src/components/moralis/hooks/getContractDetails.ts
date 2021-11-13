@@ -1,9 +1,10 @@
 import { Contract } from 'web3-eth-contract'
-import { ContractDescription } from '../moralisTypings'
+import { ContractDescription, MoralisContractDefinition } from '../moralisTypings'
 import { Utils } from 'web3-utils'
 import { CONFIG } from '@CONFIG'
+
 // @ts-ignore
-const CONFIG_CONTRACT = CONFIG.MORALIS_CONTRACT
+const CONFIG_CONTRACT = CONFIG.MORALIS_CONTRACT_DEFINITION as MoralisContractDefinition
 
 const getValueFromObject = (obj: any, key: string, returnAsNumber?: boolean) =>
   returnAsNumber ? Number(obj[key]) : obj[key]

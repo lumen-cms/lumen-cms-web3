@@ -1,11 +1,10 @@
-import { CONFIG } from '@CONFIG'
 import '../src/components/moralis/MoralisComponents'
-import { ContractDescription } from '../src/components/moralis/moralisTypings'
+import { MoralisContractDefinition } from '../src/components/moralis/moralisTypings'
+import { CONFIG } from '@CONFIG'
 
 export { LmDefaultApp as default } from 'lumen-cms-core'
-
 // @ts-ignore
-CONFIG.MORALIS_CONTRACT = {
+CONFIG.MORALIS_CONTRACT_DEFINITION = {
   contractDetailFunctions: ['preSaleStartDate', 'preSaleEndDate', 'publicSaleDate', 'paused',
     'maxMintAmountPresale', 'maxMintAmount', 'cost', 'preSaleCost', 'getCurrentCost', 'revealed', 'maxSupply',
     'preSaleMaxSupply', 'totalSupply'],
@@ -27,4 +26,4 @@ CONFIG.MORALIS_CONTRACT = {
     sale: 'cost',
     current: 'getCurrentCost'
   }
-} as ContractDescription
+} as MoralisContractDefinition

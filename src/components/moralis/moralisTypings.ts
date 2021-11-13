@@ -30,3 +30,25 @@ export type ContractNft = {
   contract?: Contract,
   contractDescription?: ContractDescription
 }
+
+export interface MoralisContractDefinition {
+  contractDetailFunctions: string[]
+  contractDetailWithUserFunctions: string[]
+  preSale: {
+    start: 'preSaleStartDate',
+    end: 'preSaleEndDate'
+  },
+  publicSale: {
+    start: string
+  },
+  availableAmount: {
+    current: string,
+    preSale: string,
+    sale: string
+  },
+  cost: {
+    preSale: string,
+    sale: string,
+    current: string
+  }
+}
