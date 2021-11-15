@@ -1,6 +1,6 @@
 {
   "name": "lumen-cms-web3",
-  "private": true,
+  "version": "0.1.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -11,16 +11,16 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
-    "cssnano-simple": "^3.0.0",
-    "moralis": "^0.0.131",
-    "react-countdown": "^2.3.2",
-    "react-moralis": "^0.2.8",
-    "storyblok-generate-ts": "^1.3.0"
+    "moralis": "0.0.132",
+    "react-countdown": "2.3.2",
+    "react-moralis": "0.2.8"
   },
   "peerDependencies": {
     "lumen-cms-core": ">=0.97.0"
   },
   "devDependencies": {
+    "storyblok-generate-ts": "^1.3.0",
+    "cssnano-simple": "3.0.0",
     "@babel/core": "^7.16.0",
     "@material-ui/core": "^4.12.3",
     "@storybook/addon-actions": "^6.3.12",

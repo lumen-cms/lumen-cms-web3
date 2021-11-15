@@ -5596,7 +5596,7 @@ cssnano-preset-simple@^3.0.0:
   dependencies:
     caniuse-lite "^1.0.30001202"
 
-cssnano-simple@3.0.0, cssnano-simple@^3.0.0:
+cssnano-simple@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/cssnano-simple/-/cssnano-simple-3.0.0.tgz#a4b8ccdef4c7084af97e19bc5b93b4ecf211e90f"
   integrity sha512-oU3ueli5Dtwgh0DyeohcIEE00QVfbPR3HzyXdAl89SfnQG3y0/qcpfLVW+jPIh3/rgMZGwuW96rejZGaYE9eUg==
@@ -9816,10 +9816,10 @@ mock-fs@^4.1.0:
   resolved "https://registry.yarnpkg.com/mock-fs/-/mock-fs-4.14.0.tgz#ce5124d2c601421255985e6e94da80a7357b1b18"
   integrity sha512-qYvlv/exQ4+svI3UOvPUpLDF0OMX5euvUH0Ny4N5QyRyhNdgAgUrVH3iUINSzEPLvx0kbo/Bp28GJKIqvE7URw==
 
-moralis@^0.0.131:
-  version "0.0.131"
-  resolved "https://registry.yarnpkg.com/moralis/-/moralis-0.0.131.tgz#68585d4f489f1265a1abc0f54dabf3e00ce98402"
-  integrity sha512-41J3ixj5Fdpc/QxCXNwJBPu7eC0m0XhanpQ8IoBAXq1nOuml4XmX7N2sYlgCC0jSWkOadbRI5dk0TifCWqUmgg==
+moralis@0.0.132:
+  version "0.0.132"
+  resolved "https://registry.yarnpkg.com/moralis/-/moralis-0.0.132.tgz#3b651274b6e0172f5aa390f0cab4639a8c10d1aa"
+  integrity sha512-ftkBDkFmoNmFEjxWITY1q9hVrd94w8dviwsWsajIH2OW4xOm33nV6Ay3aSsaWC6tTJHRV5/NYv8Hz4XARVw3mQ==
   dependencies:
     "@babel/runtime" "7.12.5"
     "@babel/runtime-corejs3" "7.12.5"
@@ -11353,7 +11353,7 @@ react-colorful@^5.1.2:
   resolved "https://registry.yarnpkg.com/react-colorful/-/react-colorful-5.5.0.tgz#8359f218984a927095477a190ab9927eaf865c0c"
   integrity sha512-BuzrlrM0ylg7coPkXOrRqlf2BgHLw5L44sybbr9Lg4xy7w9e5N7fGYbojOO0s8J0nvrM3PERN2rVFkvSa24lnQ==
 
-react-countdown@2.3.2, react-countdown@^2.3.2:
+react-countdown@2.3.2:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/react-countdown/-/react-countdown-2.3.2.tgz#4cc27f28f2dcd47237ee66e4b9f6d2a21fc0b0ad"
   integrity sha512-Q4SADotHtgOxNWhDdvgupmKVL0pMB9DvoFcxv5AzjsxVhzOVxnttMbAywgqeOdruwEAmnPhOhNv/awAgkwru2w==
@@ -11545,7 +11545,7 @@ react-material-ui-carousel@2.3.1:
     auto-bind "^2.1.1"
     react-swipeable "^6.1.0"
 
-react-moralis@^0.2.8:
+react-moralis@0.2.8:
   version "0.2.8"
   resolved "https://registry.yarnpkg.com/react-moralis/-/react-moralis-0.2.8.tgz#603851a7b308a12ccc0299e6e9e691bbed8c8908"
   integrity sha512-+XwaQZ0b6BDlpqHSbNlcPfXBV2kPQ81rPjbEIm0si/uno+aL44+8Q+0TDbTiI/lRysv8YEn5G4P3+crv5VPInA==
