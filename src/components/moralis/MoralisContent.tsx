@@ -5,7 +5,7 @@ import MoralisMint from './MoralisMint'
 type MoralisProps = {
   content: MoralisStoryblok
 }
-export default function MoralisContent({ content }: MoralisProps) {
+export default function MoralisContent({ content }: MoralisProps): JSX.Element {
   const { body } = content
 
   return (
@@ -16,6 +16,7 @@ export default function MoralisContent({ content }: MoralisProps) {
         } else if (block.component === 'moralis_mint') {
           return <MoralisMint {...block} key={block._uid} />
         }
+        return null
       })}
     </div>
   )

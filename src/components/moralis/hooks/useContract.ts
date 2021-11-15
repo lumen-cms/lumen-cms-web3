@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { useMoralis } from 'react-moralis'
 import useSWR from 'swr'
-import getContractDetails from './getContractDetails'
 import { ContractNft } from '../moralisTypings'
+import { useWeb3React } from '@web3-react/core'
+import Web3 from 'web3'
+import getContractDetails from './getContractDetails'
 
 const pureFetch = async (url: string) => {
   const result = await fetch(url)
@@ -13,15 +14,19 @@ const pureFetch = async (url: string) => {
 }
 
 export default function useContract() {
-  const { user, web3, isWeb3EnableLoading, isWeb3Enabled, web3EnableError, enableWeb3, userError } =
-    useMoralis()
-  const { data, error } = useSWR(isWeb3Enabled ? '/api/get-abi' : null, pureFetch)
+  // const { user, web3, isWeb3Enabled, web3EnableError, userError } =
+  //   useMoralis()
+  const { active, account, library } = useWeb3React()
+
+  const { data, error } = useSWR(active ? '/api/get-abi' : null, pureFetch)
   const [contractNft, setContract] = useState<ContractNft>()
+  console.log(active, library, account)
+
 
   useEffect(
     () => {
-      const eth = web3?.eth
-      const utils = web3?.utils
+      const eth = library?.eth as Web3['eth']
+      const utils = library?.utils as Web3['utils']
       if (eth && utils && data) {
         const init = async () => {
           const contract = new eth.Contract(typeof data === 'string' ? JSON.parse(data) : data, process.env.NEXT_PUBLIC_MORALIS_CONTRACT_ADDRESS)
@@ -44,18 +49,13 @@ export default function useContract() {
         }
         init()
       }
-    }, [data, web3, enableWeb3]
+    }, [data, library]
   )
-  if (error || userError) {
-    console.error(error)
-  }
 
-  useEffect(() => {
-    if (!isWeb3Enabled && !isWeb3EnableLoading) {
-      // enable web3
-      enableWeb3()
-    }
-  }, [isWeb3EnableLoading, isWeb3Enabled])
 
-  return { user, web3EnableError, isWeb3Enabled, contractNft }
+  // if (error || userError) {
+  //   console.error(error)
+  // }
+
+  return { account, contractNft }
 }

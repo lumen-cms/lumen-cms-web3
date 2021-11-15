@@ -7,34 +7,14 @@ import Countdown from 'react-countdown'
 
 
 export default function MoralisMint(content: MoralisMintStoryblok): JSX.Element {
-  const { user, web3EnableError, contractNft } = useContract()
-  const username = user?.getUsername()
+  const { contractNft, account } = useContract()
+
   const [error, setError] = useState<string>()
-  if (!username) {
-    if (!content.fallback_login_message?.length) {
-      return <LmComponentRender content={{
-        component: 'headline',
-        _uid: 'fallback_' + content._uid,
-        typography: 'subtitle1',
-        text: 'Please login first to start the mint.'
-      } as HeadlineStoryblok} />
-    }
+  if (!account) {
     return (
-      <div>
+      <>
         {content.fallback_login_message?.map(block => <LmComponentRender key={block._uid} content={block} />)}
-      </div>
-    )
-  }
-  if (web3EnableError) {
-    console.error(web3EnableError)
-    return (
-      <LmComponentRender content={{
-        component: 'headline',
-        _uid: 'fallback_' + content._uid,
-        typography: 'subtitle1',
-        color: 'error',
-        text: 'An errror occured.'
-      } as HeadlineStoryblok} />
+      </>
     )
   }
   if (!contractNft) {

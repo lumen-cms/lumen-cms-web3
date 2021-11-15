@@ -1,44 +1,17 @@
 import { LmComponentRender } from '@LmComponentRender'
-import {
-  ButtonStoryblok,
-  HeadlineStoryblok,
-  ImageStoryblok,
-  MoralisButtonStoryblok
-} from '../../typings/__generated__/components-schema'
-import { useMoralis } from 'react-moralis'
+import { ButtonStoryblok, ImageStoryblok, MoralisButtonStoryblok } from '../../typings/__generated__/components-schema'
+import { useWeb3React } from '@web3-react/core'
+import { injected } from './web3Injector'
 
 export default function MoralisAuth(content: MoralisButtonStoryblok) {
-  const { authenticate, isAuthenticating, user, logout, userError } =
-    useMoralis()
+  // const { authenticate, isAuthenticating, user, logout, userError, enableWeb3, isWeb3EnableLoading } =
+  //   useMoralis()
+  const { account, activate, deactivate } = useWeb3React()
 
-  let username = user?.getUsername()
-  if (userError?.message) {
-    return <p>{userError.message}</p>
-  }
-  if (username) {
-    let headlineElement = { ...content.user?.[0] }
+  if (account) {
     let logoutElement = content.logout?.[0]
     return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          alignContent: 'center'
-        }}
-      >
-        <LmComponentRender
-          content={
-            {
-              component: 'headline',
-              _uid: headlineElement?._uid || 'head_' + content._uid,
-              typography: 'headline6',
-              ...headlineElement,
-              text:
-                headlineElement?.text?.replace('{user}', username) || username.substr(0, 5) + '..'
-            } as HeadlineStoryblok
-          }
-        />
+      <div>
         <LmComponentRender
           content={
             {
@@ -48,8 +21,10 @@ export default function MoralisAuth(content: MoralisButtonStoryblok) {
               ...logoutElement
             } as ButtonStoryblok | ImageStoryblok
           }
-          disabled={isAuthenticating}
-          onClick={() => logout()}
+          onClick={async () => {
+            // await logout()
+            deactivate()
+          }}
         />
       </div>
     )
@@ -65,8 +40,10 @@ export default function MoralisAuth(content: MoralisButtonStoryblok) {
           ...loginElement
         } as ButtonStoryblok
       }
-      onClick={() => {
-        authenticate()
+      onClick={async () => {
+        // enableWeb3()
+        // await authenticate()
+        await activate(injected)
       }}
     />
   )
