@@ -13,9 +13,9 @@ const pureFetch = async (url: string) => {
 }
 
 export default function useContract() {
-  const { user, web3, isWeb3EnableLoading, isWeb3Enabled, web3EnableError, enableWeb3, isLoggingOut, userError } =
+  const { user, web3, isWeb3EnableLoading, isWeb3Enabled, web3EnableError, enableWeb3, userError } =
     useMoralis()
-  const { data, isValidating, error } = useSWR(isWeb3Enabled ? '/api/get-abi' : null, pureFetch)
+  const { data, error } = useSWR(isWeb3Enabled ? '/api/get-abi' : null, pureFetch)
   const [contractNft, setContract] = useState<ContractNft>()
 
   useEffect(
@@ -44,7 +44,7 @@ export default function useContract() {
         }
         init()
       }
-    }, [data, web3]
+    }, [data, web3, enableWeb3]
   )
   if (error || userError) {
     console.error(error)

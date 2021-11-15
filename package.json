@@ -1,6 +1,6 @@
 {
   "name": "lumen-cms-web3",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -8,7 +8,8 @@
     "lint": "next lint",
     "update-storyblok": "storyblok pull-components --space=82895 && storyblok-generate-ts source=./components.82895.json target=./src/typings/__generated__/components-schema.ts",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "check-types": "tsc --noemit"
   },
   "dependencies": {
     "moralis": "0.0.132",
