@@ -25,6 +25,8 @@ export type ContractDescription = {
   currentCostEth: string
   remainingPreSaleAmout: number
   remainingSaleAmount: number
+  datePresaleAhead: Date | null
+  datePublicSaleAhead: Date | null
 }
 export type ContractNft = {
   contract?: Contract,

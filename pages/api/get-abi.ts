@@ -3,7 +3,6 @@ import { getContractAbi } from '../../src/lib/getContractAbi'
 
 export default async function getAbi(req: NextApiRequest, res: NextApiResponse) {
   const abi = await getContractAbi()
-  // some caching
-  // console.log(abi)
+  res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate')
   return res.json(abi)
 }

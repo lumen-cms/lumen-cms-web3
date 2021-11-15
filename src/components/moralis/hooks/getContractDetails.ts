@@ -22,11 +22,15 @@ export default async function getContractDetails(contract: Contract, currentUser
   }), {})
 
   const dateNow = Date.now()
+  let preSaleStartTime = getValueFromObject(getterObj, CONFIG_CONTRACT.preSale.start, true) * 1000
+  let publicSaleStartTime = getValueFromObject(getterObj, CONFIG_CONTRACT.publicSale.start, true) * 1000
   const contractDesc = {
     ...getterObj,
     ...getterObjWithUser,
-    isPreSale: dateNow >= getValueFromObject(getterObj, CONFIG_CONTRACT.preSale.start, true) && dateNow <= getValueFromObject(getterObj, CONFIG_CONTRACT.preSale.end, true) * 1000,
-    isPublicSale: dateNow >= getValueFromObject(getterObj, CONFIG_CONTRACT.preSale.start, true),
+    isPreSale: dateNow >= preSaleStartTime && dateNow <= getValueFromObject(getterObj, CONFIG_CONTRACT.preSale.end, true) * 1000,
+    isPublicSale: dateNow >= publicSaleStartTime,
+    datePresaleAhead: dateNow < preSaleStartTime ? new Date(preSaleStartTime) : null,
+    datePublicSaleAhead: dateNow < publicSaleStartTime ? new Date(publicSaleStartTime) : null,
     remainingPreSaleAmout: getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.preSale, true) - getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.current, true),
     remainingSaleAmount: getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.sale, true) - getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.current, true),
     costEth: utils.fromWei(getValueFromObject(getterObj, CONFIG_CONTRACT.cost.sale)),

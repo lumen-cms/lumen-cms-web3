@@ -9313,10 +9313,10 @@ lru-queue@^0.1.0:
   dependencies:
     es5-ext "~0.10.2"
 
-lumen-cms-core@^0.97.0:
-  version "0.97.0"
-  resolved "https://registry.yarnpkg.com/lumen-cms-core/-/lumen-cms-core-0.97.0.tgz#57cd03c289337418429ac2ab22cefd0654537353"
-  integrity sha512-HKOurGf5i0/xkpi4eNzPLTvWzXTY49JcweIWAY6nMgPxkll1iHjOxrXiIBqdhlGQapTYIk24ae0QsNJjMZl2eQ==
+lumen-cms-core@^0.97.2:
+  version "0.97.2"
+  resolved "https://registry.yarnpkg.com/lumen-cms-core/-/lumen-cms-core-0.97.2.tgz#c7a78f23aeda7a8847bc4813a6377fe7d1cbcfae"
+  integrity sha512-7mHWJm2paL+v3Axq0LDJuEsPoyOiAzdIUNmNPCH89U+x190o5dYPvG5++rzWXRlbnWzGC4X8YVQsdsK6gSDKRw==
   dependencies:
     "@auth0/auth0-react" "^1.4.0"
     "@charlietango/use-script" "2.2.0"
@@ -9339,6 +9339,7 @@ lumen-cms-core@^0.97.0:
     axios "0.21.3"
     clsx "1.1.1"
     cors "^2.8.5"
+    cssnano-simple "3.0.0"
     date-fns "2.23.0"
     deepdash "5.3.9"
     diacritics "^1.3.0"
@@ -9361,6 +9362,7 @@ lumen-cms-core@^0.97.0:
     postcss "^8.2.13"
     react-aspect-ratio "1.0.49"
     react-big-calendar "0.35.0"
+    react-countdown "2.3.2"
     react-google-forms-hooks "^1.0.4"
     react-hook-form "7.15.0"
     react-hook-form-mui "2.1.0"
@@ -9379,7 +9381,7 @@ lumen-cms-core@^0.97.0:
     storyblok-rich-text-react-renderer-ts "3.1.3"
     storybook-addon-next-router "3.0.8"
     supports-webp-sync "1.1.0"
-    swr "1.0.0"
+    swr "1.0.1"
     tsconfig-paths-webpack-plugin "3.5.1"
     use-count-up "3.0.1"
     use-debounce "7.0.0"
@@ -11351,6 +11353,13 @@ react-colorful@^5.1.2:
   resolved "https://registry.yarnpkg.com/react-colorful/-/react-colorful-5.5.0.tgz#8359f218984a927095477a190ab9927eaf865c0c"
   integrity sha512-BuzrlrM0ylg7coPkXOrRqlf2BgHLw5L44sybbr9Lg4xy7w9e5N7fGYbojOO0s8J0nvrM3PERN2rVFkvSa24lnQ==
 
+react-countdown@2.3.2, react-countdown@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/react-countdown/-/react-countdown-2.3.2.tgz#4cc27f28f2dcd47237ee66e4b9f6d2a21fc0b0ad"
+  integrity sha512-Q4SADotHtgOxNWhDdvgupmKVL0pMB9DvoFcxv5AzjsxVhzOVxnttMbAywgqeOdruwEAmnPhOhNv/awAgkwru2w==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-dev-utils@^11.0.3:
   version "11.0.4"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-11.0.4.tgz#a7ccb60257a1ca2e0efe7a83e38e6700d17aa37a"
@@ -13141,14 +13150,7 @@ swarm-js@^0.1.40:
     tar "^4.0.2"
     xhr-request "^1.0.1"
 
-swr@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/swr/-/swr-1.0.0.tgz#d047933714d8bd16ae35af67d81149f4ae700a4d"
-  integrity sha512-v55Dr+vxIFiUyGxC5W4uN5falxHxYdbpb/R3bO+bSG+svbC9bUWmupy4NM/2pER7X8OvgwJWu0AiSoGy0ND9ew==
-  dependencies:
-    dequal "2.0.2"
-
-swr@^1.0.1:
+swr@1.0.1, swr@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/swr/-/swr-1.0.1.tgz#15f62846b87ee000e52fa07812bb65eb62d79483"
   integrity sha512-EPQAxSjoD4IaM49rpRHK0q+/NzcwoT8c0/Ylu/u3/6mFj/CWnQVjNJ0MV2Iuw/U+EJSd2TX5czdAwKPYZIG0YA==

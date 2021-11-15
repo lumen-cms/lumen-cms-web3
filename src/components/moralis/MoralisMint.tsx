@@ -3,9 +3,10 @@ import { LmComponentRender } from '@LmComponentRender'
 import useContract from './hooks/useContract'
 import { TextField } from '@material-ui/core'
 import { useState } from 'react'
+import Countdown from 'react-countdown'
 
 
-export default function MoralisMint(content: MoralisMintStoryblok) {
+export default function MoralisMint(content: MoralisMintStoryblok): JSX.Element {
   const { user, web3EnableError, contractNft } = useContract()
   const username = user?.getUsername()
   const [error, setError] = useState<string>()
@@ -48,29 +49,41 @@ export default function MoralisMint(content: MoralisMintStoryblok) {
   }
   const { contract, contractDescription } = contractNft
   if (contractDescription && contract) {
+    const dateAhead = contractDescription.datePresaleAhead || contractDescription.datePublicSaleAhead
+    if (dateAhead) {
+      const counterHeadline = { ...content.counter_style?.[0] }
+      return <LmComponentRender content={{
+        component: 'headline',
+        _uid: 'date_presale',
+        ...counterHeadline
+      } as HeadlineStoryblok}>
+        {counterHeadline?.text ? <><span>{counterHeadline?.text}</span><br /></> : null}
+        <Countdown date={dateAhead} />
+      </LmComponentRender>
+    }
     if (contractDescription.isPreSale && !contractDescription.isWhitelisted) {
-      return content.fallback_not_whitelisted?.map(
+      return <>{content.fallback_not_whitelisted?.map(
         blok => (
           <LmComponentRender content={blok} key={blok._uid} />
         )
-      ) || <div>You are not whitelisted!</div>
+      ) || <div>You are not whitelisted!</div>}</>
     } else if (!contractDescription.canPurchaseAmount) {
       if (contractDescription.isPreSale) {
-        return content.fallback_presale?.map(
+        return <>{content.fallback_presale?.map(
           blok => (
             <LmComponentRender content={blok} key={blok._uid} />
           )
         ) || (
           <div>There are no Tokens left for you. Come back when the public sale starts!!</div>
-        )
+        )}</>
       }
-      return content.fallback_sale?.map(
+      return <>{content.fallback_sale?.map(
         blok => (
           <LmComponentRender content={blok} key={blok._uid} />
         )
       ) || (
         <div>There are no Tokens left for you.</div>
-      )
+      )}</>
     }
     return (
       <div>
@@ -124,5 +137,4 @@ export default function MoralisMint(content: MoralisMintStoryblok) {
   return (
     <div>loading...</div>
   )
-
 }
