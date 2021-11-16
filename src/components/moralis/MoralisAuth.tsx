@@ -1,39 +1,15 @@
 import { LmComponentRender } from '@LmComponentRender'
 import { ButtonStoryblok, ImageStoryblok, MoralisButtonStoryblok } from '../../typings/__generated__/components-schema'
-import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
+import { useWeb3React } from '@web3-react/core'
 import { injected, walletconnect } from './web3Injector'
-import {
-  NoEthereumProviderError,
-  UserRejectedRequestError as UserRejectedRequestErrorInjected
-} from '@web3-react/injected-connector'
 import { UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } from '@web3-react/walletconnect-connector'
+import Web3 from 'web3'
 import { useEagerConnect } from './hooks/useEagerConnect'
 
-const getErrorMessage = (error: Error) => {
-  if (error instanceof NoEthereumProviderError) {
-    return 'No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile.'
-  } else if (error instanceof UnsupportedChainIdError) {
-    return 'You\'re connected to an unsupported network.'
-  } else if (
-    error instanceof UserRejectedRequestErrorInjected ||
-    error instanceof UserRejectedRequestErrorWalletConnect
-  ) {
-    return 'Please authorize this website to access your Ethereum account.'
-  } else {
-    console.error(error)
-    return 'An unknown error occurred. Check the console for more details.'
-  }
-}
-
-
 export default function MoralisAuth(content: MoralisButtonStoryblok) {
-  const { account, activate, deactivate, error } = useWeb3React()
+  const { account, activate, deactivate } = useWeb3React<Web3>()
   useEagerConnect()
 
-  const currentError = error ? getErrorMessage(error) : null
-  if (currentError) {
-    console.error(currentError)
-  }
   if (account) {
     let logoutElement = content.logout?.[0]
     return (
@@ -55,6 +31,24 @@ export default function MoralisAuth(content: MoralisButtonStoryblok) {
       </div>
     )
   }
+
+  const activateAccount = async () => {
+    // @ts-ignore
+    if (window.ethereum) {
+      await activate(injected, error => {
+        injected.deactivate()
+      })
+    } else {
+      await activate(walletconnect, error => {
+        if (error instanceof UserRejectedRequestErrorWalletConnect) {
+          // walletconnect.deactivate()
+          // @ts-ignore
+          walletconnect.handleDisconnect()
+        }
+      })
+    }
+  }
+
   let loginElement = content.login?.[0]
   return (
     <LmComponentRender
@@ -67,13 +61,7 @@ export default function MoralisAuth(content: MoralisButtonStoryblok) {
         } as ButtonStoryblok
       }
       onClick={async () => {
-        // enableWeb3()
-        // await authenticate()
-        await activate(injected, error => {
-          if (error instanceof NoEthereumProviderError) {
-            activate(walletconnect)
-          }
-        })
+        await activateAccount()
       }}
     />
   )
