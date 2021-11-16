@@ -16,17 +16,17 @@ const pureFetch = async (url: string) => {
 export default function useContract() {
   // const { user, web3, isWeb3Enabled, web3EnableError, userError } =
   //   useMoralis()
-  const { active, account, library } = useWeb3React()
+  const { active, account, library } = useWeb3React<Web3>()
 
-  const { data, error } = useSWR(active ? '/api/get-abi' : null, pureFetch)
+  const { data } = useSWR(active ? '/api/get-abi' : null, pureFetch)
   const [contractNft, setContract] = useState<ContractNft>()
   console.log(active, library, account)
 
 
   useEffect(
     () => {
-      const eth = library?.eth as Web3['eth']
-      const utils = library?.utils as Web3['utils']
+      const eth = library?.eth
+      const utils = library?.utils
       if (eth && utils && data) {
         const init = async () => {
           const contract = new eth.Contract(typeof data === 'string' ? JSON.parse(data) : data, process.env.NEXT_PUBLIC_MORALIS_CONTRACT_ADDRESS)
