@@ -27,12 +27,13 @@ const getErrorMessage = (error: Error) => {
 
 
 export default function MoralisAuth(content: MoralisButtonStoryblok) {
-  // const { authenticate, isAuthenticating, user, logout, userError, enableWeb3, isWeb3EnableLoading } =
-  //   useMoralis()
   const { account, activate, deactivate, error } = useWeb3React()
   useEagerConnect()
 
   const currentError = error ? getErrorMessage(error) : null
+  if (currentError) {
+    console.error(currentError)
+  }
   if (account) {
     let logoutElement = content.logout?.[0]
     return (
