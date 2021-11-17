@@ -11,6 +11,6 @@ const RPC_URLS: { [chainId: number]: string } = {
 }
 export const walletconnect = new WalletConnectConnector({
   supportedChainIds,
-  rpc: { 1: RPC_URLS[1] },
+  rpc: { 1: RPC_URLS[process.env.NEXT_PUBLIC_MORALIS_CHAIN === 'rinkeby' ? 4 : 1] },
   qrcode: true
 })

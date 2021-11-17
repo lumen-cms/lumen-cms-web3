@@ -40,8 +40,9 @@ export default function MoralisAuth(content: MoralisButtonStoryblok) {
       await activate(walletconnect, error => {
         if (error instanceof UserRejectedRequestErrorWalletConnect) {
           // walletconnect.deactivate()
+          walletconnect.walletConnectProvider = null
           // @ts-ignore
-          walletconnect.handleDisconnect()
+          // walletconnect.handleDisconnect()
         }
       })
     }
