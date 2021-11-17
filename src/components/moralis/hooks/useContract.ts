@@ -18,7 +18,7 @@ export default function useContract() {
   //   useMoralis()
   const { active, account, library } = useWeb3React<Web3>()
 
-  const { data } = useSWR(active ? '/api/get-abi' : null, pureFetch)
+  const { data } = useSWR('/api/get-abi', pureFetch)
   const [contractNft, setContract] = useState<ContractNft>()
   console.log(active, library, account)
 
