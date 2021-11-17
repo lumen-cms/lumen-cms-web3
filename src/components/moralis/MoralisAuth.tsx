@@ -35,9 +35,7 @@ export default function MoralisAuth(content: MoralisButtonStoryblok) {
   const activateAccount = async () => {
     // @ts-ignore
     if (window.ethereum) {
-      await activate(injected, error => {
-        injected.deactivate()
-      })
+      await activate(injected)
     } else {
       await activate(walletconnect, error => {
         if (error instanceof UserRejectedRequestErrorWalletConnect) {
