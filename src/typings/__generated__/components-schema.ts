@@ -1852,61 +1852,10 @@ export interface MoralisButtonStoryblok {
 }
 
 export interface MoralisMintStoryblok {
-  contract_token?: string;
-  fallback_login_message?: (
-    | AccordionStoryblok
-    | AuthContainerStoryblok
-    | AuthFormStoryblok
-    | AvatarStoryblok
-    | BottomNavigationStoryblok
-    | ButtonStoryblok
-    | ButtonListStoryblok
-    | ButtonSpeechTextStoryblok
-    | CardListStoryblok
-    | CategoryBoxStoryblok
-    | DateHeadlineStoryblok
-    | DialogStoryblok
-    | DividerStoryblok
-    | EcommerceCheckoutStoryblok
-    | EventCalendarStoryblok
-    | FlexRowStoryblok
-    | FormStoryblok
-    | FormBuilderStoryblok
-    | FormContainerStoryblok
-    | HeadlineStoryblok
-    | HtmlStoryblok
-    | HubspotFormStoryblok
-    | HubspotMeetingStoryblok
-    | IconStoryblok
-    | IframeStoryblok
-    | IframeAdvancedStoryblok
-    | ImageStoryblok
-    | ImageListStoryblok
-    | InstagramListStoryblok
-    | InstagramPostStoryblok
-    | LinkStoryblok
-    | ListSearchAutocompleteStoryblok
-    | ListSearchFieldStoryblok
-    | ListStoriesStoryblok
-    | ListWidgetStoryblok
-    | MoralisStoryblok
-    | MotionStoryblok
-    | NavListStoryblok
-    | NavMenuStoryblok
-    | ParagraphStoryblok
-    | PlayerStoryblok
-    | PricingStoryblok
-    | PromotionStoryblok
-    | RichTextEditorStoryblok
-    | RowStoryblok
-    | SearchStoryStoryblok
-    | SliderStoryblok
-    | StaticSectionStoryblok
-    | TableStoryblok
-    | TabsStoryblok
-    | TimelineStoryblok
-    | ToolbarNaviButtonStoryblok
-  )[];
+  contract_token: string;
+  counter_style?: HeadlineStoryblok[];
+  owner_token: string;
+  chain?: "mainnet" | "goerli" | "kovan" | "rinkeby" | "ropsten";
   fallback_not_whitelisted?: (
     | AccordionStoryblok
     | AuthContainerStoryblok
@@ -2069,7 +2018,63 @@ export interface MoralisMintStoryblok {
     | TimelineStoryblok
     | ToolbarNaviButtonStoryblok
   )[];
-  counter_style?: HeadlineStoryblok[];
+  fallback_login_message?: (
+    | AccordionStoryblok
+    | AuthContainerStoryblok
+    | AuthFormStoryblok
+    | AvatarStoryblok
+    | BottomNavigationStoryblok
+    | ButtonStoryblok
+    | ButtonListStoryblok
+    | ButtonSpeechTextStoryblok
+    | CardListStoryblok
+    | CategoryBoxStoryblok
+    | DateHeadlineStoryblok
+    | DialogStoryblok
+    | DividerStoryblok
+    | EcommerceCheckoutStoryblok
+    | EventCalendarStoryblok
+    | FlexRowStoryblok
+    | FormStoryblok
+    | FormBuilderStoryblok
+    | FormContainerStoryblok
+    | HeadlineStoryblok
+    | HtmlStoryblok
+    | HubspotFormStoryblok
+    | HubspotMeetingStoryblok
+    | IconStoryblok
+    | IframeStoryblok
+    | IframeAdvancedStoryblok
+    | ImageStoryblok
+    | ImageListStoryblok
+    | InstagramListStoryblok
+    | InstagramPostStoryblok
+    | LinkStoryblok
+    | ListSearchAutocompleteStoryblok
+    | ListSearchFieldStoryblok
+    | ListStoriesStoryblok
+    | ListWidgetStoryblok
+    | MoralisStoryblok
+    | MotionStoryblok
+    | NavListStoryblok
+    | NavMenuStoryblok
+    | ParagraphStoryblok
+    | PlayerStoryblok
+    | PricingStoryblok
+    | PromotionStoryblok
+    | RichTextEditorStoryblok
+    | RowStoryblok
+    | SearchStoryStoryblok
+    | SliderStoryblok
+    | StaticSectionStoryblok
+    | TableStoryblok
+    | TabsStoryblok
+    | TimelineStoryblok
+    | ToolbarNaviButtonStoryblok
+  )[];
+  mint_style?: (ButtonStoryblok | ImageStoryblok)[];
+  mint_flexbox_container?: FlexRowStoryblok[];
+  style_options?: "dark"[];
   _uid: string;
   component: "moralis_mint";
   [k: string]: any;

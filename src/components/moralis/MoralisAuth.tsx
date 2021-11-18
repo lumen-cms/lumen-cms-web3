@@ -6,6 +6,8 @@ import { UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } fro
 import Web3 from 'web3'
 import { useEagerConnect } from './hooks/useEagerConnect'
 
+
+
 export default function MoralisAuth(content: MoralisButtonStoryblok) {
   const { account, activate, deactivate } = useWeb3React<Web3>()
   useEagerConnect()

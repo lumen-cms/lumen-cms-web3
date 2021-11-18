@@ -1,7 +1,5 @@
-const ABI_URL: string = process.env.NEXT_PUBLIC_ABI_URI as string + process.env.NEXT_PUBLIC_MORALIS_CONTRACT_ADDRESS as string + '&apikey=' + process.env.ETHERSCAN_API_KEY
-
-export const getContractAbi = async () => {
-  console.log(ABI_URL)
+export const getContractAbi = async (id: string) => {
+  const ABI_URL: string = process.env.NEXT_PUBLIC_ABI_URI as string + id + '&apikey=' + process.env.ETHERSCAN_API_KEY
   const result = await fetch(ABI_URL)
   if (result.ok) {
     const values = await result.json()

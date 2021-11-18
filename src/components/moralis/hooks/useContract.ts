@@ -4,6 +4,7 @@ import { ContractNft } from '../moralisTypings'
 import { useWeb3React } from '@web3-react/core'
 import Web3 from 'web3'
 import getContractDetails from './getContractDetails'
+import { MoralisMintStoryblok } from '../../../typings/__generated__/components-schema'
 
 const pureFetch = async (url: string) => {
   const result = await fetch(url)
@@ -13,15 +14,27 @@ const pureFetch = async (url: string) => {
   return null
 }
 
-export default function useContract() {
-  // const { user, web3, isWeb3Enabled, web3EnableError, userError } =
-  //   useMoralis()
-  const { active, account, library } = useWeb3React<Web3>()
+const CHAINS = {
+  main: {
+    name: 'main',
+    displayName: 'Ethereum',
+    id: 1
+  },
+  rinkeby: {
+    name: 'rinkeby',
+    displayName: 'Rinkeby Test',
+    id: 4
+  }
+}
 
-  const { data } = useSWR('/api/get-abi', pureFetch)
+export default function useContract(content: MoralisMintStoryblok) {
+  const { active, account, library, chainId } = useWeb3React<Web3>()
+  const selectedChain = CHAINS[content.chain || 'main']
+  const isCorrectChain = selectedChain?.id === chainId
+
+  const { data } = useSWR(isCorrectChain && content.contract_token ? `/api/get-abi?id=${content.contract_token}` : null, pureFetch)
+
   const [contractNft, setContract] = useState<ContractNft>()
-  console.log(active, library, account)
-
 
   useEffect(
     () => {
@@ -29,12 +42,12 @@ export default function useContract() {
       const utils = library?.utils
       if (eth && utils && data) {
         const init = async () => {
-          const contract = new eth.Contract(typeof data === 'string' ? JSON.parse(data) : data, process.env.NEXT_PUBLIC_MORALIS_CONTRACT_ADDRESS)
+          const contract = new eth.Contract(typeof data === 'string' ? JSON.parse(data) : data, content.owner_token)
           const accounts = await eth.getAccounts()
           let currentUser = accounts?.[0]
           contract.options.from = currentUser
-          contract.options.address = process.env.NEXT_PUBLIC_MORALIS_CONTRACT_ADDRESS as string
-          contract.defaultChain = process.env.NEXT_PUBLIC_MORALIS_CHAIN as any
+          contract.options.address = content.contract_token
+          contract.defaultChain = content.chain || 'mainnet'
           if (!contract.methods) {
             console.log('contract is not loaded', contract.methods)
             return
@@ -57,5 +70,5 @@ export default function useContract() {
   //   console.error(error)
   // }
 
-  return { account, contractNft }
+  return { account, contractNft, selectedChain, isCorrectChain }
 }
