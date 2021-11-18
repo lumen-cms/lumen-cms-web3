@@ -28,7 +28,7 @@ const CHAINS = {
 }
 
 export default function useContract(content: MoralisMintStoryblok) {
-  const { active, account, library, chainId } = useWeb3React<Web3>()
+  const { account, library, chainId } = useWeb3React<Web3>()
   const selectedChain = CHAINS[content.chain || 'main']
   const isCorrectChain = selectedChain?.id === chainId
 

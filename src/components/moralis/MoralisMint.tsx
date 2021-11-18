@@ -86,7 +86,6 @@ export default function MoralisMint(content: MoralisMintStoryblok): JSX.Element 
         <div>There are no Tokens left for you.</div>
       )}</>
     }
-    const textboxStyle = content.textfield_amount_style?.[0]
     return (
       <LmComponentRender content={{
         component: 'flex_row',
