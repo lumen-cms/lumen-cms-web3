@@ -1,21 +1,34 @@
-import { Contract } from 'web3-eth-contract'
 import { ContractDescription, MoralisContractDefinition } from '../moralisTypings'
-import { fromWei } from 'web3-utils'
 import { CONFIG } from '@CONFIG'
+import { Contract } from 'ethers'
 
 // @ts-ignore
 const CONFIG_CONTRACT = CONFIG.MORALIS_CONTRACT_DEFINITION as MoralisContractDefinition
 
-const getValueFromObject = (obj: any, key: string, returnAsNumber?: boolean) =>
-  returnAsNumber ? Number(obj[key]) : obj[key]
+const getValueFromObject = (obj: any, key: string, returnAsNumber?: boolean) => {
+  let value = obj[key]
+  return returnAsNumber ? Number(value) : value
+}
 
-export default async function getContractDetails(contract: Contract, currentUser: string): Promise<ContractDescription> {
-  const getter = await Promise.all(CONFIG_CONTRACT.contractDetailFunctions.map(key => contract.methods[key]().call()))
+export default async function getContractDetails(contract: Contract, account: string): Promise<ContractDescription> {
+  const getter = await Promise.all(CONFIG_CONTRACT.contractDetailFunctions.map(key => contract.functions[key]().then((r) => {
+    const value = r[0]
+    if (value._isBigNumber) {
+      return value.toNumber()
+    }
+    return value
+  })))
   const getterObj: Partial<ContractDescription> = CONFIG_CONTRACT.contractDetailFunctions.reduce((obj, item, iteration) => ({
     ...obj,
     [item]: getter[iteration]
   }), {})
-  const getterWithUser = await Promise.all(CONFIG_CONTRACT.contractDetailWithUserFunctions.map(key => contract.methods[key](currentUser).call()))
+  const getterWithUser = await Promise.all(CONFIG_CONTRACT.contractDetailWithUserFunctions.map(key => contract.functions[key](account).then(r => {
+    const value = r[0]
+    if (value._isBigNumber) {
+      return value.toNumber()
+    }
+    return value
+  })))
   const getterObjWithUser: Partial<ContractDescription> = CONFIG_CONTRACT.contractDetailWithUserFunctions.reduce((obj, item, iteration) => ({
     ...obj,
     [item]: getterWithUser[iteration]
@@ -29,9 +42,6 @@ export default async function getContractDetails(contract: Contract, currentUser
     isPublicSale: dateNow >= getValueFromObject(getterObj, CONFIG_CONTRACT.preSale.start, true),
     remainingPreSaleAmout: getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.preSale, true) - getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.current, true),
     remainingSaleAmount: getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.sale, true) - getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.current, true),
-    costEth: fromWei(getValueFromObject(getterObj, CONFIG_CONTRACT.cost.sale)),
-    preSaleCostEth: fromWei(getValueFromObject(getterObj, CONFIG_CONTRACT.cost.preSale)),
-    currentCostEth: fromWei(getValueFromObject(getterObj, CONFIG_CONTRACT.cost.current)),
     canPurchaseAmount: 0
   } as ContractDescription
   contractDesc.isPreSaleSoldOut = contractDesc.remainingPreSaleAmout === 0

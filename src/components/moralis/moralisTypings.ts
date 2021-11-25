@@ -1,4 +1,4 @@
-import { Contract } from 'web3-eth-contract'
+import { Contract } from 'ethers'
 
 export type ContractDescription = {
   preSaleStartDate: string
@@ -19,10 +19,7 @@ export type ContractDescription = {
   isPublicSale: boolean
   isPreSaleSoldOut: boolean
   isSaleSoldOut: boolean
-  costEth: string
-  preSaleCostEth: string
   canPurchaseAmount: number
-  currentCostEth: string
   remainingPreSaleAmout: number
   remainingSaleAmount: number
   datePresaleAhead: Date | null
