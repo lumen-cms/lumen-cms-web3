@@ -1,7 +1,6 @@
 import { LmCoreComponents } from '@CONFIG'
 import dynamic from 'next/dynamic'
 import Web3Provider from './Web3Provider'
-import EthersProvider from './useEthers'
 
 const MoralisContent = dynamic(() => import('./MoralisContent'), {
   ssr: false

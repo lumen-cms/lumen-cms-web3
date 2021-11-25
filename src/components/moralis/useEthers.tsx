@@ -72,6 +72,7 @@ const EthersProvider: FC = ({ children }) => {
         provider.on('network', ({ chainId }: { chainId: number }) => {
           setChainId(chainId)
         })
+        // @ts-ignore
         window.ethereum?.on('accountsChanged', (accounts: Array<string>) => {
           setAccount(accounts[0])
         })

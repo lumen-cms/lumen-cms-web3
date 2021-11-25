@@ -1,14 +1,14 @@
 import { LmComponentRender } from '@LmComponentRender'
 import { ButtonStoryblok, ImageStoryblok, MoralisButtonStoryblok } from '../../typings/__generated__/components-schema'
-import { useEthers } from './useEthers'
 import { injected, walletconnect } from './web3Injector'
 import { useWeb3React } from '@web3-react/core'
 
 import { UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } from '@web3-react/walletconnect-connector'
+import { useEagerConnect } from './hooks/useEagerConnect'
 
 export default function MoralisAuth(content: MoralisButtonStoryblok) {
   const { account, activate, deactivate } = useWeb3React()
-  // useEagerConnect()
+  useEagerConnect()
   // const { walletConnect, metamask, account, deactivate } = useEthers()
   if (account) {
     let logoutElement = content.logout?.[0]
@@ -34,7 +34,11 @@ export default function MoralisAuth(content: MoralisButtonStoryblok) {
 
   let loginElement = content.login?.[0]
   return (
-    <div>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'row',
+      gap: '12px'
+    }}>
 
       <LmComponentRender
         content={
@@ -68,13 +72,13 @@ export default function MoralisAuth(content: MoralisButtonStoryblok) {
         onClick={async () => {
           try {
             await activate(walletconnect, error => {
-                  if (error instanceof UserRejectedRequestErrorWalletConnect) {
-                    // walletconnect.deactivate()
-                    walletconnect.walletConnectProvider = null
-                    // @ts-ignore
-                    // walletconnect.handleDisconnect()
-                  }
-                })
+              if (error instanceof UserRejectedRequestErrorWalletConnect) {
+                // walletconnect.deactivate()
+                walletconnect.walletConnectProvider = null
+                // @ts-ignore
+                // walletconnect.handleDisconnect()
+              }
+            })
             // await walletConnect()
           } catch (e) {
             console.log(e)

@@ -1,6 +1,6 @@
 import { Contract } from 'web3-eth-contract'
 import { ContractDescription, MoralisContractDefinition } from '../moralisTypings'
-import { Utils } from 'web3-utils'
+import { fromWei } from 'web3-utils'
 import { CONFIG } from '@CONFIG'
 
 // @ts-ignore
@@ -9,7 +9,7 @@ const CONFIG_CONTRACT = CONFIG.MORALIS_CONTRACT_DEFINITION as MoralisContractDef
 const getValueFromObject = (obj: any, key: string, returnAsNumber?: boolean) =>
   returnAsNumber ? Number(obj[key]) : obj[key]
 
-export default async function getContractDetails(contract: Contract, currentUser: string, utils: Utils): Promise<ContractDescription> {
+export default async function getContractDetails(contract: Contract, currentUser: string): Promise<ContractDescription> {
   const getter = await Promise.all(CONFIG_CONTRACT.contractDetailFunctions.map(key => contract.methods[key]().call()))
   const getterObj: Partial<ContractDescription> = CONFIG_CONTRACT.contractDetailFunctions.reduce((obj, item, iteration) => ({
     ...obj,
@@ -29,9 +29,9 @@ export default async function getContractDetails(contract: Contract, currentUser
     isPublicSale: dateNow >= getValueFromObject(getterObj, CONFIG_CONTRACT.preSale.start, true),
     remainingPreSaleAmout: getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.preSale, true) - getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.current, true),
     remainingSaleAmount: getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.sale, true) - getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.current, true),
-    costEth: utils.fromWei(getValueFromObject(getterObj, CONFIG_CONTRACT.cost.sale)),
-    preSaleCostEth: utils.fromWei(getValueFromObject(getterObj, CONFIG_CONTRACT.cost.preSale)),
-    currentCostEth: utils.fromWei(getValueFromObject(getterObj, CONFIG_CONTRACT.cost.current)),
+    costEth: fromWei(getValueFromObject(getterObj, CONFIG_CONTRACT.cost.sale)),
+    preSaleCostEth: fromWei(getValueFromObject(getterObj, CONFIG_CONTRACT.cost.preSale)),
+    currentCostEth: fromWei(getValueFromObject(getterObj, CONFIG_CONTRACT.cost.current)),
     canPurchaseAmount: 0
   } as ContractDescription
   contractDesc.isPreSaleSoldOut = contractDesc.remainingPreSaleAmout === 0

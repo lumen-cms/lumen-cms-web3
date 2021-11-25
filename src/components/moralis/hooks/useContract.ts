@@ -4,8 +4,9 @@ import { ContractNft } from '../moralisTypings'
 import { useWeb3React } from '@web3-react/core'
 import getContractDetails from './getContractDetails'
 import { MoralisMintStoryblok } from '../../../typings/__generated__/components-schema'
-import { ethers } from 'ethers'
-import Web3 from 'web3'
+import ContractDefault, { Contract } from 'web3-eth-contract'
+// import { Eth } from 'web3-eth'
+// import Web3 from 'web3'
 
 const pureFetch = async (url: string) => {
   const result = await fetch(url)
@@ -29,7 +30,7 @@ const CHAINS = {
 }
 
 export default function useContract(content: MoralisMintStoryblok) {
-  const { active, account, library, chainId } = useWeb3React<Web3>()
+  const { account, chainId, connector, } = useWeb3React()
   const selectedChain = CHAINS[content.chain || 'main']
   const isCorrectChain = selectedChain?.id === chainId
 
@@ -39,31 +40,57 @@ export default function useContract(content: MoralisMintStoryblok) {
 
   useEffect(
     () => {
-      const eth = library?.eth
-      const utils = library?.utils
-      if (eth && utils && data) {
-        const init = async () => {
-          const contract = new eth.Contract(typeof data === 'string' ? JSON.parse(data) : data, content.owner_token)
-          const accounts = await eth.getAccounts()
-          let currentUser = accounts?.[0]
-          contract.options.from = currentUser
-          contract.options.address = content.contract_token
-          contract.defaultChain = content.chain || 'mainnet'
-          if (!contract.methods) {
-            console.log('contract is not loaded', contract.methods)
-            return
-          }
-          let contractDescription = await getContractDetails(contract, currentUser, utils)
-          // contract.options.value = contractDescription.currentCostEth
-          console.log(contractDescription)
-          setContract({
-            contract,
-            contractDescription
-          })
+
+      const init = async () => {
+
+        if (!(data && account && connector)) {
+          return
         }
-        init()
+        let ABI = typeof data === 'string' ? JSON.parse(data) : data
+        let provider = await connector.getProvider()
+        // @ts-ignore
+        ContractDefault.setProvider(provider)
+        // @ts-ignore
+        const contract: Contract = new ContractDefault(ABI, content.contract_token)
+        contract.options.from = account
+        contract.options.address = content.contract_token
+        contract.defaultChain = content.chain || 'mainnet'
+        if (!contract.methods) {
+          console.log('contract is not loaded', contract.methods)
+          return
+        }
+        let contractDescription = await getContractDetails(contract, account/*, utils*/)
+        console.log(contractDescription)
+        setContract({
+          contract,
+          contractDescription
+        })
+        // @ts-ignore
+        // const eth = library?.eth
+        // // @ts-ignore
+        // const utils = library?.utils
+        // if (eth && utils && data) {
+        //   const contract = new eth.Contract(ABI, content.owner_token)
+        //   const accounts = await eth.getAccounts()
+        //   let currentUser = accounts?.[0]
+        //   contract.options.from = currentUser
+        //   contract.options.address = content.contract_token
+        //   contract.defaultChain = content.chain || 'mainnet'
+        //   if (!contract.methods) {
+        //     console.log('contract is not loaded', contract.methods)
+        //     return
+        //   }
+        //   let contractDescription = await getContractDetails(contract, currentUser, utils)
+        //   // contract.options.value = contractDescription.currentCostEth
+        //   console.log(contractDescription)
+        //   setContract({
+        //     contract,
+        //     contractDescription
+        //   })
+        // }
       }
-    }, [data, library]
+      init()
+    }, [data, account, connector]
   )
 
 
