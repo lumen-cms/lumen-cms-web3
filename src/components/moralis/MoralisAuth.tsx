@@ -9,7 +9,6 @@ import { useEagerConnect } from './hooks/useEagerConnect'
 export default function MoralisAuth(content: MoralisButtonStoryblok) {
   const { account, activate, deactivate } = useWeb3React()
   useEagerConnect()
-  // const { walletConnect, metamask, account, deactivate } = useEthers()
   if (account) {
     let logoutElement = content.logout?.[0]
     return (
@@ -33,6 +32,7 @@ export default function MoralisAuth(content: MoralisButtonStoryblok) {
   }
 
   let loginElement = content.login?.[0]
+  let loginWalletElement = content.login_walletconnect?.[0]
   return (
     <div style={{
       display: 'flex',
@@ -64,8 +64,8 @@ export default function MoralisAuth(content: MoralisButtonStoryblok) {
         content={
           {
             component: 'button',
-            _uid: loginElement?._uid || 'login_' + content._uid,
-            ...loginElement,
+            _uid: loginWalletElement?._uid || 'login_wallet_' + content._uid,
+            ...loginWalletElement,
             label: 'WalletConnect'
           } as ButtonStoryblok
         }
@@ -73,13 +73,9 @@ export default function MoralisAuth(content: MoralisButtonStoryblok) {
           try {
             await activate(walletconnect, error => {
               if (error instanceof UserRejectedRequestErrorWalletConnect) {
-                // walletconnect.deactivate()
                 walletconnect.walletConnectProvider = null
-                // @ts-ignore
-                // walletconnect.handleDisconnect()
               }
             })
-            // await walletConnect()
           } catch (e) {
             console.log(e)
           }
