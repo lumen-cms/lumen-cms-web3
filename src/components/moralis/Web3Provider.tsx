@@ -4,6 +4,7 @@ import Web3 from 'web3'
 
 function getLibrary(provider: any) {
   return new Web3(provider)
+  // return new ethers.providers.Web3Provider(provider)
 }
 
 const Web3Provider: FC = ({ children }) => {

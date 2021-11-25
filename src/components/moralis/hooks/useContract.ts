@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react'
 import useSWR from 'swr'
 import { ContractNft } from '../moralisTypings'
 import { useWeb3React } from '@web3-react/core'
-import Web3 from 'web3'
 import getContractDetails from './getContractDetails'
 import { MoralisMintStoryblok } from '../../../typings/__generated__/components-schema'
+import { ethers } from 'ethers'
+import Web3 from 'web3'
 
 const pureFetch = async (url: string) => {
   const result = await fetch(url)
@@ -28,7 +29,7 @@ const CHAINS = {
 }
 
 export default function useContract(content: MoralisMintStoryblok) {
-  const { account, library, chainId } = useWeb3React<Web3>()
+  const { active, account, library, chainId } = useWeb3React<Web3>()
   const selectedChain = CHAINS[content.chain || 'main']
   const isCorrectChain = selectedChain?.id === chainId
 

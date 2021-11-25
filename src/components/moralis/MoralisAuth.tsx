@@ -1,17 +1,15 @@
 import { LmComponentRender } from '@LmComponentRender'
 import { ButtonStoryblok, ImageStoryblok, MoralisButtonStoryblok } from '../../typings/__generated__/components-schema'
-import { useWeb3React } from '@web3-react/core'
+import { useEthers } from './useEthers'
 import { injected, walletconnect } from './web3Injector'
+import { useWeb3React } from '@web3-react/core'
+
 import { UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } from '@web3-react/walletconnect-connector'
-import Web3 from 'web3'
-import { useEagerConnect } from './hooks/useEagerConnect'
-
-
 
 export default function MoralisAuth(content: MoralisButtonStoryblok) {
-  const { account, activate, deactivate } = useWeb3React<Web3>()
-  useEagerConnect()
-
+  const { account, activate, deactivate } = useWeb3React()
+  // useEagerConnect()
+  // const { walletConnect, metamask, account, deactivate } = useEthers()
   if (account) {
     let logoutElement = content.logout?.[0]
     return (
@@ -27,43 +25,62 @@ export default function MoralisAuth(content: MoralisButtonStoryblok) {
           }
           onClick={async () => {
             // await logout()
-            deactivate()
+            await deactivate()
           }}
         />
       </div>
     )
   }
 
-  const activateAccount = async () => {
-    // @ts-ignore
-    if (window.ethereum) {
-      await activate(injected)
-    } else {
-      await activate(walletconnect, error => {
-        if (error instanceof UserRejectedRequestErrorWalletConnect) {
-          // walletconnect.deactivate()
-          walletconnect.walletConnectProvider = null
-          // @ts-ignore
-          // walletconnect.handleDisconnect()
-        }
-      })
-    }
-  }
-
   let loginElement = content.login?.[0]
   return (
-    <LmComponentRender
-      content={
-        {
-          component: 'button',
-          _uid: loginElement?._uid || 'login_' + content._uid,
-          label: 'My Button',
-          ...loginElement
-        } as ButtonStoryblok
-      }
-      onClick={async () => {
-        await activateAccount()
-      }}
-    />
+    <div>
+
+      <LmComponentRender
+        content={
+          {
+            component: 'button',
+            _uid: loginElement?._uid || 'login_' + content._uid,
+            ...loginElement,
+            label: 'MetaMask'
+          } as ButtonStoryblok
+        }
+        onClick={async () => {
+          try {
+
+            await activate(injected)
+
+            // await metamask()
+          } catch (e) {
+            console.log(e)
+          }
+        }}
+      />
+      <LmComponentRender
+        content={
+          {
+            component: 'button',
+            _uid: loginElement?._uid || 'login_' + content._uid,
+            ...loginElement,
+            label: 'WalletConnect'
+          } as ButtonStoryblok
+        }
+        onClick={async () => {
+          try {
+            await activate(walletconnect, error => {
+                  if (error instanceof UserRejectedRequestErrorWalletConnect) {
+                    // walletconnect.deactivate()
+                    walletconnect.walletConnectProvider = null
+                    // @ts-ignore
+                    // walletconnect.handleDisconnect()
+                  }
+                })
+            // await walletConnect()
+          } catch (e) {
+            console.log(e)
+          }
+        }}
+      />
+    </div>
   )
 }
