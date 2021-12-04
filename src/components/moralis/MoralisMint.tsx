@@ -6,7 +6,7 @@ import { createTheme, ThemeProvider } from '@material-ui/core/styles'
 import { useMemo, useState } from 'react'
 import { MoralisMintProps } from './moralisTypings'
 
-export default function MoralisMint(content: MoralisMintProps): JSX.Element {
+export default function MoralisMint({ content }: MoralisMintProps): JSX.Element {
   const { contractNft, account, isCorrectChain, selectedChain } = useContract(content)
   const theme = useMemo(
     () => {

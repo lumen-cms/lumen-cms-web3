@@ -36,7 +36,9 @@ export interface MoralisContractDefinition {
   paused: string
 }
 
-export type MoralisMintProps = MoralisMintStoryblok & {
-  moralis_mint_data: any
+export type MoralisMintProps = {
+  content: MoralisMintStoryblok & {
+    moralis_mint_data: any
+  }
 }
 

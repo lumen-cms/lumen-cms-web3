@@ -4,15 +4,6 @@ import { useWeb3React } from '@web3-react/core'
 import { ethers } from 'ethers'
 import getContractDetails from './getContractDetails'
 
-
-const pureFetch = async (url: string) => {
-  const result = await fetch(url)
-  if (result.ok) {
-    return await result.json()
-  }
-  return null
-}
-
 const CHAINS = {
   main: {
     name: 'main',
@@ -26,9 +17,10 @@ const CHAINS = {
   }
 }
 
-export default function useContract(content: MoralisMintProps) {
+export default function useContract(content: MoralisMintProps['content']) {
   const { account, chainId, library } = useWeb3React()
   const selectedChain = CHAINS[content.chain || 'main']
+  console.log(content.chain, chainId)
   const isCorrectChain = selectedChain?.id === chainId
   const [contractDescription, setContractDescription] = useState<ContractNft['contractDescription']>()
   const contract: ethers.Contract | null = useMemo(

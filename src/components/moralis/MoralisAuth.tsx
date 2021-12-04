@@ -7,7 +7,11 @@ import { UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } fro
 import { useEagerConnect } from './hooks/useEagerConnect'
 import { useEffect, useState } from 'react'
 
-export default function MoralisAuth(content: MoralisButtonStoryblok) {
+type MoralisAuthProps = {
+  content: MoralisButtonStoryblok
+}
+
+export default function MoralisAuth({ content }: MoralisAuthProps) {
   const { account, activate, deactivate } = useWeb3React()
   const [hasMetaMask, setHasMetaMask] = useState<boolean>()
   useEffect(() => {

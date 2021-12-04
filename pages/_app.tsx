@@ -4,7 +4,6 @@ import { CONFIG } from '@CONFIG'
 
 export { LmDefaultApp as default } from 'lumen-cms-core'
 
-
 const contractProps: MoralisContractDefinition = {
   contractDetailFunctions: [
     'vipPreSaleActive', 'preSaleActive', 'publicSaleActive',
