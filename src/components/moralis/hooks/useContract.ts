@@ -1,8 +1,6 @@
-import { useEffect, useState } from 'react'
-import useSWR from 'swr'
-import { ContractNft } from '../moralisTypings'
+import { useEffect, useMemo, useState } from 'react'
+import { ContractNft, MoralisMintProps } from '../moralisTypings'
 import { useWeb3React } from '@web3-react/core'
-import { MoralisMintStoryblok } from '../../../typings/__generated__/components-schema'
 import { ethers } from 'ethers'
 import getContractDetails from './getContractDetails'
 
@@ -28,40 +26,40 @@ const CHAINS = {
   }
 }
 
-export default function useContract(content: MoralisMintStoryblok) {
+export default function useContract(content: MoralisMintProps) {
   const { account, chainId, library } = useWeb3React()
   const selectedChain = CHAINS[content.chain || 'main']
   const isCorrectChain = selectedChain?.id === chainId
-
-  const { data } = useSWR(isCorrectChain && content.contract_token ? `/api/get-abi?id=${content.contract_token}` : null, pureFetch)
-
-  const [contractNft, setContract] = useState<ContractNft>()
+  const [contractDescription, setContractDescription] = useState<ContractNft['contractDescription']>()
+  const contract: ethers.Contract | null = useMemo(
+    () => {
+      if (content.contract_token && content.moralis_mint_data && library) {
+        const signer = library.getSigner()
+        return new ethers.Contract(content.contract_token, content.moralis_mint_data, signer)
+      }
+      return null
+    }, [content.contract_token, content.moralis_mint_data, library]
+  )
   useEffect(
     () => {
-
       const init = async () => {
-
-        if (!(data && account && library)) {
-          return
+        if (contract && account) {
+          const contractDescription = await getContractDetails(contract, account)
+          console.log(contractDescription)
+          setContractDescription(contractDescription)
         }
-        let ABI = typeof data === 'string' ? JSON.parse(data) : data
-
-        const signer = library.getSigner()
-        const contract = new ethers.Contract(content.contract_token, ABI, signer)
-        const contractDescription = await getContractDetails(contract, account)
-        setContract({
-          contract,
-          contractDescription
-        })
       }
       init()
-    }, [data, account, library, content.contract_token]
+    }, [account, contract]
   )
 
 
   // if (error || userError) {
   //   console.error(error)
   // }
-
+  const contractNft = {
+    contractDescription,
+    contract
+  }
   return { account, contractNft, selectedChain, isCorrectChain }
 }

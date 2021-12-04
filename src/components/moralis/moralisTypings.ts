@@ -1,30 +1,21 @@
 import { Contract } from 'ethers'
+import { MoralisMintStoryblok } from '../../typings/__generated__/components-schema'
+
 
 export type ContractDescription = {
-  preSaleStartDate: string
-  preSaleEndDate: string
-  publicSaleDate: string
+  isWhitelistActive: boolean
+  isPreSaleActive: boolean
+  isSaleActive: boolean
+  cost: number
+  soldAmount: number
+  totalAvailableAmount: number
+  maxPresaleAmount: number
+  isWhitelisted: boolean
+  countOfUserMinted: number
   paused: boolean
-  maxMintAmountPresale: boolean
-  maxMintAmount: boolean
-  cost: string
-  preSaleCost: string
-  getCurrentCost: string
-  isWhitelisted: string
-  revealed: boolean
-  maxSupply: string
-  preSaleMaxSupply: string
-  walletOfOwner: string
-  isPreSale: boolean
-  isPublicSale: boolean
-  isPreSaleSoldOut: boolean
-  isSaleSoldOut: boolean
   canPurchaseAmount: number
-  remainingPreSaleAmout: number
-  remainingSaleAmount: number
-  datePresaleAhead: Date | null
-  datePublicSaleAhead: Date | null
 }
+
 export type ContractNft = {
   contract?: Contract,
   contractDescription?: ContractDescription
@@ -33,21 +24,19 @@ export type ContractNft = {
 export interface MoralisContractDefinition {
   contractDetailFunctions: string[]
   contractDetailWithUserFunctions: string[]
-  preSale: {
-    start: 'preSaleStartDate',
-    end: 'preSaleEndDate'
-  },
-  publicSale: {
-    start: string
-  },
-  availableAmount: {
-    current: string,
-    preSale: string,
-    sale: string
-  },
-  cost: {
-    preSale: string,
-    sale: string,
-    current: string
-  }
+  isWhitelistActive: string
+  isPreSaleActive: string
+  isSaleActive: string
+  cost: string
+  soldAmount: string
+  totalAvailableAmount: string
+  maxPresaleAmount: string
+  isWhitelisted: string
+  countOfUserMinted: string
+  paused: string
 }
+
+export type MoralisMintProps = MoralisMintStoryblok & {
+  moralis_mint_data: any
+}
+

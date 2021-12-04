@@ -14,7 +14,11 @@ export default async function getContractDetails(contract: Contract, account: st
   const getter = await Promise.all(CONFIG_CONTRACT.contractDetailFunctions.map(key => contract.functions[key]().then((r) => {
     const value = r[0]
     if (value._isBigNumber) {
-      return value.toNumber()
+      try {
+        return value.toNumber()
+      } catch (e) {
+        return value
+      }
     }
     return value
   })))
@@ -34,29 +38,26 @@ export default async function getContractDetails(contract: Contract, account: st
     [item]: getterWithUser[iteration]
   }), {})
 
-  const dateNow = Date.now()
-  const contractDesc = {
-    ...getterObj,
-    ...getterObjWithUser,
-    isPreSale: dateNow >= getValueFromObject(getterObj, CONFIG_CONTRACT.preSale.start, true) * 1000 && dateNow <= getValueFromObject(getterObj, CONFIG_CONTRACT.preSale.end, true) * 1000,
-    isPublicSale: dateNow >= getValueFromObject(getterObj, CONFIG_CONTRACT.preSale.start, true),
-    remainingPreSaleAmout: getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.preSale, true) - getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.current, true),
-    remainingSaleAmount: getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.sale, true) - getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.current, true),
-    canPurchaseAmount: 0
-  } as ContractDescription
-  contractDesc.isPreSaleSoldOut = contractDesc.remainingPreSaleAmout === 0
-  contractDesc.isSaleSoldOut = contractDesc.remainingSaleAmount === 0
-  const currentWalletAmount = contractDesc.walletOfOwner.length
-  const maxMintPresale = Number(contractDesc.maxMintAmountPresale)
-  if (contractDesc.isPreSale) {
-    if (!(contractDesc.isPreSaleSoldOut || !contractDesc.isWhitelisted || currentWalletAmount >= maxMintPresale)) {
-      contractDesc.canPurchaseAmount = contractDesc.remainingPreSaleAmout < maxMintPresale ? contractDesc.remainingPreSaleAmout - currentWalletAmount : maxMintPresale - currentWalletAmount
-    }
-  } else if (contractDesc.isPublicSale) {
-    const maxMint = Number(contractDesc.maxMintAmount)
-    if (!(contractDesc.isSaleSoldOut || currentWalletAmount >= maxMint)) {
-      contractDesc.canPurchaseAmount = contractDesc.remainingSaleAmount < maxMint ? contractDesc.remainingSaleAmount - currentWalletAmount : maxMint - currentWalletAmount
-    }
+  const contractDesc: ContractDescription = {
+    isSaleActive: getValueFromObject(getterObj, CONFIG_CONTRACT.isSaleActive),
+    isPreSaleActive: getValueFromObject(getterObj, CONFIG_CONTRACT.isPreSaleActive),
+    isWhitelistActive: getValueFromObject(getterObj, CONFIG_CONTRACT.isWhitelistActive),
+    canPurchaseAmount: 0,
+    cost: getValueFromObject(getterObj, CONFIG_CONTRACT.cost),
+    soldAmount: getValueFromObject(getterObj, CONFIG_CONTRACT.soldAmount),
+    totalAvailableAmount: getValueFromObject(getterObj, CONFIG_CONTRACT.totalAvailableAmount),
+    paused: getValueFromObject(getterObj, CONFIG_CONTRACT.paused),
+    maxPresaleAmount: getValueFromObject(getterObj, CONFIG_CONTRACT.paused),
+    isWhitelisted: getValueFromObject(getterObjWithUser, CONFIG_CONTRACT.isWhitelisted),
+    countOfUserMinted: getValueFromObject(getterObjWithUser, CONFIG_CONTRACT.countOfUserMinted)?.length || 0
   }
+
+  if (contractDesc.isSaleActive || contractDesc.isPreSaleActive || contractDesc.isWhitelistActive) {
+    if (contractDesc.isWhitelistActive) {
+      contractDesc.canPurchaseAmount = contractDesc.maxPresaleAmount - contractDesc.countOfUserMinted
+    }
+    contractDesc.canPurchaseAmount = 7 // make this configurable through Storyblok
+  }
+
   return contractDesc
 }

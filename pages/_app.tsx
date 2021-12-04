@@ -3,27 +3,25 @@ import { MoralisContractDefinition } from '../src/components/moralis/moralisTypi
 import { CONFIG } from '@CONFIG'
 
 export { LmDefaultApp as default } from 'lumen-cms-core'
-// @ts-ignore
-CONFIG.MORALIS_CONTRACT_DEFINITION = {
-  contractDetailFunctions: ['preSaleStartDate', 'preSaleEndDate', 'publicSaleDate', 'paused',
-    'maxMintAmountPresale', 'maxMintAmount', 'cost', 'preSaleCost', 'getCurrentCost', 'revealed', 'maxSupply',
-    'preSaleMaxSupply', 'totalSupply'],
+
+
+const contractProps: MoralisContractDefinition = {
+  contractDetailFunctions: [
+    'vipPreSaleActive', 'preSaleActive', 'publicSaleActive',
+    'paused', 'revealed',
+    'cost', 'preSaleCost', 'getCurrentCost',
+    'maxMintAmountVipPresale', 'maxSupply', 'totalSupply'],
   contractDetailWithUserFunctions: ['isWhitelisted', 'walletOfOwner'],
-  preSale: {
-    start: 'preSaleStartDate',
-    end: 'preSaleEndDate'
-  },
-  publicSale: {
-    start: 'publicSaleDate'
-  },
-  availableAmount: {
-    current: 'totalSupply',
-    preSale: 'preSaleMaxSupply',
-    sale: 'maxSupply'
-  },
-  cost: {
-    preSale: 'preSaleCost',
-    sale: 'cost',
-    current: 'getCurrentCost'
-  }
-} as MoralisContractDefinition
+  isWhitelistActive: 'vipPreSaleActive',
+  isPreSaleActive: 'preSaleActive',
+  isSaleActive: 'publicSaleActive',
+  cost: 'getCurrentCost',
+  soldAmount: 'totalSupply',
+  totalAvailableAmount: 'maxSupply',
+  maxPresaleAmount: 'maxMintAmountVipPresale',
+  isWhitelisted: 'isWhitelisted',
+  countOfUserMinted: 'walletOfOwner',
+  paused: 'paused'
+}
+
+CONFIG.MORALIS_CONTRACT_DEFINITION = contractProps
