@@ -2,8 +2,6 @@ import { ContractDescription, MoralisContractDefinition } from '../moralisTyping
 import { CONFIG } from '@CONFIG'
 import { Contract } from 'ethers'
 
-// @ts-ignore
-const CONFIG_CONTRACT = CONFIG.MORALIS_CONTRACT_DEFINITION as MoralisContractDefinition
 
 const getValueFromObject = (obj: any, key: string, returnAsNumber?: boolean) => {
   let value = obj[key]
@@ -11,6 +9,8 @@ const getValueFromObject = (obj: any, key: string, returnAsNumber?: boolean) => 
 }
 
 export default async function getContractDetails(contract: Contract, account: string): Promise<ContractDescription> {
+  const CONFIG_CONTRACT = CONFIG.MORALIS_CONTRACT_DEFINITION as MoralisContractDefinition
+
   const getter = await Promise.all(CONFIG_CONTRACT.contractDetailFunctions.map(key => contract.functions[key]().then((r) => {
     const value = r[0]
     if (value._isBigNumber) {
