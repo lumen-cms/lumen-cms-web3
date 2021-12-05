@@ -1,26 +1,24 @@
 import '../src/components/moralis/MoralisComponents'
-import { MoralisContractDefinition } from '../src/components/moralis/moralisTypings'
+import { ContractDefinition } from '../src/components/moralis/moralisTypings'
 import { CONFIG } from '@CONFIG'
 
 export { LmDefaultApp as default } from 'lumen-cms-core'
 
-const contractProps: MoralisContractDefinition = {
+const contractProps: ContractDefinition = {
   contractDetailFunctions: [
-    'vipPreSaleActive', 'preSaleActive', 'publicSaleActive',
-    'paused', 'revealed',
+    'sale', 'paused', 'revealed',
     'cost', 'preSaleCost', 'getCurrentCost',
-    'maxMintAmountVipPresale', 'maxSupply', 'totalSupply'],
+    'maxMintWhitelist', 'maxMintAmount', 'maxSupply', 'totalSupply'],
   contractDetailWithUserFunctions: ['isWhitelisted', 'walletOfOwner'],
-  isWhitelistActive: 'vipPreSaleActive',
-  isPreSaleActive: 'preSaleActive',
-  isSaleActive: 'publicSaleActive',
   cost: 'getCurrentCost',
   soldAmount: 'totalSupply',
   totalAvailableAmount: 'maxSupply',
-  maxPresaleAmount: 'maxMintAmountVipPresale',
+  maxPresaleAmount: 'maxMintWhitelist',
   isWhitelisted: 'isWhitelisted',
   countOfUserMinted: 'walletOfOwner',
-  paused: 'paused'
+  paused: 'paused',
+  sale: 'sale',
+  maxMintAmount: 'maxMintAmount'
 }
 
 CONFIG.MORALIS_CONTRACT_DEFINITION = contractProps

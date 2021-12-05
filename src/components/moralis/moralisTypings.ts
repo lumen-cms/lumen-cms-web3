@@ -14,6 +14,8 @@ export type ContractDescription = {
   countOfUserMinted: number
   paused: boolean
   canPurchaseAmount: number
+  sale: number
+  maxMintAmount: number
 }
 
 export type ContractNft = {
@@ -21,12 +23,9 @@ export type ContractNft = {
   contractDescription?: ContractDescription
 }
 
-export interface MoralisContractDefinition {
+export interface ContractDefinition {
   contractDetailFunctions: string[]
   contractDetailWithUserFunctions: string[]
-  isWhitelistActive: string
-  isPreSaleActive: string
-  isSaleActive: string
   cost: string
   soldAmount: string
   totalAvailableAmount: string
@@ -34,6 +33,8 @@ export interface MoralisContractDefinition {
   isWhitelisted: string
   countOfUserMinted: string
   paused: string
+  sale: string
+  maxMintAmount: string
 }
 
 export type MoralisMintProps = {
