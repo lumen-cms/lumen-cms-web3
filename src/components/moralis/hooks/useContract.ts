@@ -1,19 +1,8 @@
-import { useEffect, useState } from 'react'
-import useSWR from 'swr'
-import { ContractNft } from '../moralisTypings'
+import { useEffect, useMemo, useState } from 'react'
+import { ContractNft, MoralisMintProps } from '../moralisTypings'
 import { useWeb3React } from '@web3-react/core'
-import getContractDetails from './getContractDetails'
-import { MoralisMintStoryblok } from '../../../typings/__generated__/components-schema'
 import { ethers } from 'ethers'
-import Web3 from 'web3'
-
-const pureFetch = async (url: string) => {
-  const result = await fetch(url)
-  if (result.ok) {
-    return await result.json()
-  }
-  return null
-}
+import getContractDetails from './getContractDetails'
 
 const CHAINS = {
   main: {
@@ -28,48 +17,41 @@ const CHAINS = {
   }
 }
 
-export default function useContract(content: MoralisMintStoryblok) {
-  const { active, account, library, chainId } = useWeb3React<Web3>()
+export default function useContract(content: MoralisMintProps['content']) {
+  const { account, chainId, library } = useWeb3React()
   const selectedChain = CHAINS[content.chain || 'main']
+  console.log(content.chain, chainId)
   const isCorrectChain = selectedChain?.id === chainId
-
-  const { data } = useSWR(isCorrectChain && content.contract_token ? `/api/get-abi?id=${content.contract_token}` : null, pureFetch)
-
-  const [contractNft, setContract] = useState<ContractNft>()
-
+  const [contractDescription, setContractDescription] = useState<ContractNft['contractDescription']>()
+  const contract: ethers.Contract | null = useMemo(
+    () => {
+      if (content.contract_token && content.moralis_mint_data && library) {
+        const signer = library.getSigner()
+        return new ethers.Contract(content.contract_token, content.moralis_mint_data, signer)
+      }
+      return null
+    }, [content.contract_token, content.moralis_mint_data, library]
+  )
   useEffect(
     () => {
-      const eth = library?.eth
-      const utils = library?.utils
-      if (eth && utils && data) {
-        const init = async () => {
-          const contract = new eth.Contract(typeof data === 'string' ? JSON.parse(data) : data, content.owner_token)
-          const accounts = await eth.getAccounts()
-          let currentUser = accounts?.[0]
-          contract.options.from = currentUser
-          contract.options.address = content.contract_token
-          contract.defaultChain = content.chain || 'mainnet'
-          if (!contract.methods) {
-            console.log('contract is not loaded', contract.methods)
-            return
-          }
-          let contractDescription = await getContractDetails(contract, currentUser, utils)
-          // contract.options.value = contractDescription.currentCostEth
+      const init = async () => {
+        if (contract && account) {
+          const contractDescription = await getContractDetails(contract, account)
           console.log(contractDescription)
-          setContract({
-            contract,
-            contractDescription
-          })
+          setContractDescription(contractDescription)
         }
-        init()
       }
-    }, [data, library]
+      init()
+    }, [account, contract]
   )
 
 
   // if (error || userError) {
   //   console.error(error)
   // }
-
+  const contractNft = {
+    contractDescription,
+    contract
+  }
   return { account, contractNft, selectedChain, isCorrectChain }
 }

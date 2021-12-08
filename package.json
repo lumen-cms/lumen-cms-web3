@@ -1,6 +1,6 @@
 {
   "name": "lumen-cms-web3",
-  "version": "0.1.12",
+  "version": "0.1.18",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,17 +9,14 @@
     "update-storyblok": "storyblok pull-components --space=82895 && storyblok-generate-ts source=./components.82895.json target=./src/typings/__generated__/components-schema.ts",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "check-types": "tsc --noemit"
+    "check-types": "tsc --noemit",
+    "analyze": "cross-env BUNDLE_ANALYZE=true npm run build"
   },
   "dependencies": {
-    "@walletconnect/web3-provider": "^1.6.6",
     "@web3-react/core": "6.1.9",
     "@web3-react/injected-connector": "6.0.7",
-    "@web3-react/walletconnect-connector": "6.2.4",
-    "ethers": "^5.5.1",
-    "react-countdown": "2.3.2",
-    "web3": "1.6.1",
-    "zustand": "^3.6.5"
+    "@web3-react/walletconnect-connector": "6.2.8",
+    "ethers": "5.5.2"
   },
   "peerDependencies": {
     "lumen-cms-core": ">=0.97.0"
@@ -27,6 +24,7 @@
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@material-ui/core": "^4.12.3",
+    "@next/bundle-analyzer": "12.0.4",
     "@storybook/addon-actions": "^6.3.12",
     "@storybook/addon-essentials": "^6.3.12",
     "@storybook/addon-links": "^6.3.12",
@@ -36,10 +34,11 @@
     "@types/node": "16.11.6",
     "@types/react": "17.0.34",
     "babel-loader": "^8.2.3",
+    "cross-env": "^7.0.3",
     "cssnano-simple": "3.0.0",
     "eslint": "7",
     "eslint-config-next": "12.0.3",
-    "lumen-cms-core": "^0.97.7",
+    "lumen-cms-core": "^0.99.5",
     "next": "12.0.4",
     "postcss": "^8.3.11",
     "react": "17.0.2",

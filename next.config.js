@@ -1,4 +1,4 @@
-let config = require('lumen-cms-core/config/nextjs_prod_config')
+let config = require('lumen-cms-core/config/nextjs_dev_config')
 
 
 /** @type {import('next').NextConfig} */

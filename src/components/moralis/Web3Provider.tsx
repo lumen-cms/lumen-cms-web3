@@ -1,15 +1,12 @@
 import { FC } from 'react'
 import { Web3ReactProvider } from '@web3-react/core'
-import Web3 from 'web3'
-
-function getLibrary(provider: any) {
-  return new Web3(provider)
-  // return new ethers.providers.Web3Provider(provider)
-}
+import { ethers } from 'ethers'
 
 const Web3Provider: FC = ({ children }) => {
   return (
-    <Web3ReactProvider getLibrary={getLibrary}>{children}</Web3ReactProvider>
+    <Web3ReactProvider getLibrary={(provider) => {
+      return new ethers.providers.Web3Provider(provider)
+    }}>{children}</Web3ReactProvider>
   )
 }
 export default Web3Provider

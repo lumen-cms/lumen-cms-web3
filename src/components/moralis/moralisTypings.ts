@@ -1,56 +1,45 @@
-import { Contract } from 'web3-eth-contract'
+import { Contract } from 'ethers'
+import { MoralisMintStoryblok } from '../../typings/__generated__/components-schema'
+
 
 export type ContractDescription = {
-  preSaleStartDate: string
-  preSaleEndDate: string
-  publicSaleDate: string
+  isWhitelistActive: boolean
+  isPreSaleActive: boolean
+  isSaleActive: boolean
+  cost: number
+  soldAmount: number
+  totalAvailableAmount: number
+  maxPresaleAmount: number
+  isWhitelisted: boolean
+  countOfUserMinted: number
   paused: boolean
-  maxMintAmountPresale: boolean
-  maxMintAmount: boolean
-  cost: string
-  preSaleCost: string
-  getCurrentCost: string
-  isWhitelisted: string
-  revealed: boolean
-  maxSupply: string
-  preSaleMaxSupply: string
-  walletOfOwner: string
-  isPreSale: boolean
-  isPublicSale: boolean
-  isPreSaleSoldOut: boolean
-  isSaleSoldOut: boolean
-  costEth: string
-  preSaleCostEth: string
   canPurchaseAmount: number
-  currentCostEth: string
-  remainingPreSaleAmout: number
-  remainingSaleAmount: number
-  datePresaleAhead: Date | null
-  datePublicSaleAhead: Date | null
+  sale: number
+  maxMintAmount: number
 }
+
 export type ContractNft = {
   contract?: Contract,
   contractDescription?: ContractDescription
 }
 
-export interface MoralisContractDefinition {
+export interface ContractDefinition {
   contractDetailFunctions: string[]
   contractDetailWithUserFunctions: string[]
-  preSale: {
-    start: 'preSaleStartDate',
-    end: 'preSaleEndDate'
-  },
-  publicSale: {
-    start: string
-  },
-  availableAmount: {
-    current: string,
-    preSale: string,
-    sale: string
-  },
-  cost: {
-    preSale: string,
-    sale: string,
-    current: string
+  cost: string
+  soldAmount: string
+  totalAvailableAmount: string
+  maxPresaleAmount: string
+  isWhitelisted: string
+  countOfUserMinted: string
+  paused: string
+  sale: string
+  maxMintAmount: string
+}
+
+export type MoralisMintProps = {
+  content: MoralisMintStoryblok & {
+    moralis_mint_data: any
   }
 }
+

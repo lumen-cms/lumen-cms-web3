@@ -1,6 +1,5 @@
 import { MoralisStoryblok } from '../../typings/__generated__/components-schema'
-import MoralisAuth from './MoralisAuth'
-import MoralisMint from './MoralisMint'
+import { LmComponentRender } from '@LmComponentRender'
 
 type MoralisProps = {
   content: MoralisStoryblok
@@ -10,14 +9,9 @@ export default function MoralisContent({ content }: MoralisProps): JSX.Element {
 
   return (
     <div className={'lm-moralis'}>
-      {body?.map(block => {
-        if (block.component === 'moralis_button') {
-          return <MoralisAuth {...block} key={block._uid} />
-        } else if (block.component === 'moralis_mint') {
-          return <MoralisMint {...block} key={block._uid} />
-        }
-        return null
-      })}
+      {body?.map(block =>
+        <LmComponentRender content={block} key={block._uid} />
+      )}
     </div>
   )
 }

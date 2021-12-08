@@ -1,52 +1,60 @@
-import { Contract } from 'web3-eth-contract'
-import { ContractDescription, MoralisContractDefinition } from '../moralisTypings'
-import { Utils } from 'web3-utils'
+import { ContractDefinition, ContractDescription } from '../moralisTypings'
 import { CONFIG } from '@CONFIG'
+import { Contract } from 'ethers'
 
-// @ts-ignore
-const CONFIG_CONTRACT = CONFIG.MORALIS_CONTRACT_DEFINITION as MoralisContractDefinition
+export default async function getContractDetails(contract: Contract, account: string): Promise<ContractDescription> {
+  const CONFIG_CONTRACT = CONFIG.MORALIS_CONTRACT_DEFINITION as ContractDefinition
 
-const getValueFromObject = (obj: any, key: string, returnAsNumber?: boolean) =>
-  returnAsNumber ? Number(obj[key]) : obj[key]
-
-export default async function getContractDetails(contract: Contract, currentUser: string, utils: Utils): Promise<ContractDescription> {
-  const getter = await Promise.all(CONFIG_CONTRACT.contractDetailFunctions.map(key => contract.methods[key]().call()))
+  const getter = await Promise.all(CONFIG_CONTRACT.contractDetailFunctions.map(key => contract.functions[key]().then((r) => {
+    const value = r[0]
+    if (value._isBigNumber) {
+      try {
+        return value.toNumber()
+      } catch (e) {
+        return value
+      }
+    }
+    return value
+  })))
   const getterObj: Partial<ContractDescription> = CONFIG_CONTRACT.contractDetailFunctions.reduce((obj, item, iteration) => ({
     ...obj,
     [item]: getter[iteration]
   }), {})
-  const getterWithUser = await Promise.all(CONFIG_CONTRACT.contractDetailWithUserFunctions.map(key => contract.methods[key](currentUser).call()))
+  const getterWithUser = await Promise.all(CONFIG_CONTRACT.contractDetailWithUserFunctions.map(key => contract.functions[key](account).then(r => {
+    const value = r[0]
+    if (value._isBigNumber) {
+      return value.toNumber()
+    }
+    return value
+  })))
   const getterObjWithUser: Partial<ContractDescription> = CONFIG_CONTRACT.contractDetailWithUserFunctions.reduce((obj, item, iteration) => ({
     ...obj,
     [item]: getterWithUser[iteration]
   }), {})
 
-  const dateNow = Date.now()
-  const contractDesc = {
-    ...getterObj,
-    ...getterObjWithUser,
-    isPreSale: dateNow >= getValueFromObject(getterObj, CONFIG_CONTRACT.preSale.start, true) * 1000 && dateNow <= getValueFromObject(getterObj, CONFIG_CONTRACT.preSale.end, true) * 1000,
-    isPublicSale: dateNow >= getValueFromObject(getterObj, CONFIG_CONTRACT.preSale.start, true),
-    remainingPreSaleAmout: getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.preSale, true) - getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.current, true),
-    remainingSaleAmount: getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.sale, true) - getValueFromObject(getterObj, CONFIG_CONTRACT.availableAmount.current, true),
-    costEth: utils.fromWei(getValueFromObject(getterObj, CONFIG_CONTRACT.cost.sale)),
-    preSaleCostEth: utils.fromWei(getValueFromObject(getterObj, CONFIG_CONTRACT.cost.preSale)),
-    currentCostEth: utils.fromWei(getValueFromObject(getterObj, CONFIG_CONTRACT.cost.current)),
-    canPurchaseAmount: 0
-  } as ContractDescription
-  contractDesc.isPreSaleSoldOut = contractDesc.remainingPreSaleAmout === 0
-  contractDesc.isSaleSoldOut = contractDesc.remainingSaleAmount === 0
-  const currentWalletAmount = contractDesc.walletOfOwner.length
-  const maxMintPresale = Number(contractDesc.maxMintAmountPresale)
-  if (contractDesc.isPreSale) {
-    if (!(contractDesc.isPreSaleSoldOut || !contractDesc.isWhitelisted || currentWalletAmount >= maxMintPresale)) {
-      contractDesc.canPurchaseAmount = contractDesc.remainingPreSaleAmout < maxMintPresale ? contractDesc.remainingPreSaleAmout - currentWalletAmount : maxMintPresale - currentWalletAmount
-    }
-  } else if (contractDesc.isPublicSale) {
-    const maxMint = Number(contractDesc.maxMintAmount)
-    if (!(contractDesc.isSaleSoldOut || currentWalletAmount >= maxMint)) {
-      contractDesc.canPurchaseAmount = contractDesc.remainingSaleAmount < maxMint ? contractDesc.remainingSaleAmount - currentWalletAmount : maxMint - currentWalletAmount
-    }
+  let saleValue = getterObj[CONFIG_CONTRACT.sale]
+  const contractDesc: ContractDescription = {
+    isSaleActive: saleValue === 3,
+    isPreSaleActive: saleValue === 2,
+    isWhitelistActive: saleValue === 1,
+    canPurchaseAmount: 0,
+    cost: getterObj[CONFIG_CONTRACT.cost],
+    soldAmount: getterObj[CONFIG_CONTRACT.soldAmount],
+    totalAvailableAmount: getterObj[CONFIG_CONTRACT.totalAvailableAmount],
+    paused: getterObj[CONFIG_CONTRACT.paused],
+    maxPresaleAmount: getterObj[CONFIG_CONTRACT.paused],
+    isWhitelisted: getterObjWithUser[CONFIG_CONTRACT.isWhitelisted],
+    countOfUserMinted: getterObjWithUser[CONFIG_CONTRACT.countOfUserMinted]?.length || 0,
+    maxMintAmount: getterObj[CONFIG_CONTRACT.maxMintAmount],
+    sale: saleValue
   }
+
+  if (contractDesc.isSaleActive || contractDesc.isPreSaleActive || contractDesc.isWhitelistActive) {
+    if (contractDesc.isWhitelistActive) {
+      contractDesc.canPurchaseAmount = contractDesc.maxPresaleAmount - contractDesc.countOfUserMinted
+    }
+    contractDesc.canPurchaseAmount = contractDesc.maxMintAmount
+  }
+
   return contractDesc
 }
