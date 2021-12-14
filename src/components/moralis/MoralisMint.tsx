@@ -49,13 +49,13 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
         )
       ) || <div>You are not whitelisted!</div>}</>
     } else if (!contractDescription.canPurchaseAmount) {
-      if (contractDescription.isWhitelistActive) {
+      if (contractDescription.isWhitelistActive || contractDescription.isPreSaleActive) {
         return <>{content.fallback_presale?.map(
           blok => (
             <LmComponentRender content={blok} key={blok._uid} />
           )
         ) || (
-          <div>There are no Tokens left for you. Come back when the public sale starts!!</div>
+          <div>There are no Tokens left for you. You have to be on the whitelist or have an invitation key.</div>
         )}</>
       }
       return <>{content.fallback_sale?.map(

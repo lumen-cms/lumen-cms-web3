@@ -20,7 +20,6 @@ const CHAINS = {
 export default function useContract(content: MoralisMintProps['content']) {
   const { account, chainId, library } = useWeb3React()
   const selectedChain = CHAINS[content.chain || 'main']
-  console.log(content.chain, chainId)
   const isCorrectChain = selectedChain?.id === chainId
   const [contractDescription, setContractDescription] = useState<ContractNft['contractDescription']>()
   const contract: ethers.Contract | null = useMemo(
@@ -37,7 +36,14 @@ export default function useContract(content: MoralisMintProps['content']) {
       const init = async () => {
         if (contract && account) {
           const contractDescription = await getContractDetails(contract, account)
-          console.log(contractDescription)
+          if (process.env.NODE_ENV === 'development') {
+            console.log(contractDescription)
+          }
+          if (contractDescription.isPreSaleActive) {
+            if (content.presale_get_param && !window.location.search.includes(content.presale_get_param)) {
+              contractDescription.canPurchaseAmount = 0
+            }
+          }
           setContractDescription(contractDescription)
         }
       }

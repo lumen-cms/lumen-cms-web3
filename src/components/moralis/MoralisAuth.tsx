@@ -11,6 +11,11 @@ type MoralisAuthProps = {
   content: MoralisButtonStoryblok
 }
 
+const assets = {
+  metamask: 'https://cdn.jsdelivr.net/gh/MetaMask/brand-resources/SVG/metamask-fox.svg',
+  walletconnect: 'https://cdn.jsdelivr.net/gh/WalletConnect/walletconnect-assets/svg/circle/walletconnect-circle-blue.svg'
+}
+
 export default function MoralisAuth({ content }: MoralisAuthProps) {
   const { account, activate, deactivate } = useWeb3React()
   const [hasMetaMask, setHasMetaMask] = useState<boolean>()
@@ -57,6 +62,9 @@ export default function MoralisAuth({ content }: MoralisAuthProps) {
             {
               component: 'button',
               _uid: loginElement?._uid || 'login_' + content._uid,
+              image: assets.metamask,
+              variant: 'outlined',
+              image_size: 'medium',
               ...loginElement,
               label: 'MetaMask'
             } as ButtonStoryblok
@@ -73,13 +81,17 @@ export default function MoralisAuth({ content }: MoralisAuthProps) {
           }}
         />
       </div>
-      <div className={hasMetaMask ? 'd-none' : undefined}>
+      <div>
         <LmComponentRender
           content={
             {
               component: 'button',
               _uid: loginWalletElement?._uid || 'login_wallet_' + content._uid,
+              image: assets.walletconnect,
+              variant: 'outlined',
+              image_size: 'medium',
               ...loginWalletElement,
+              size: 'lm-button-large',
               label: 'WalletConnect'
             } as ButtonStoryblok
           }
@@ -94,7 +106,9 @@ export default function MoralisAuth({ content }: MoralisAuthProps) {
               console.log(e)
             }
           }}
-        />
+        >
+          WalletConnect
+        </LmComponentRender>
       </div>
     </div>
   )

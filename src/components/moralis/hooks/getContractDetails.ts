@@ -51,9 +51,12 @@ export default async function getContractDetails(contract: Contract, account: st
 
   if (contractDesc.isSaleActive || contractDesc.isPreSaleActive || contractDesc.isWhitelistActive) {
     if (contractDesc.isWhitelistActive) {
-      contractDesc.canPurchaseAmount = contractDesc.maxPresaleAmount - contractDesc.countOfUserMinted
+      if (contractDesc.isWhitelisted) {
+        contractDesc.canPurchaseAmount = contractDesc.maxPresaleAmount - contractDesc.countOfUserMinted
+      }
+    } else {
+      contractDesc.canPurchaseAmount = contractDesc.maxMintAmount
     }
-    contractDesc.canPurchaseAmount = contractDesc.maxMintAmount
   }
 
   return contractDesc

@@ -217,6 +217,12 @@ export interface BackgroundElementItemStoryblok {
   [k: string]: any;
 }
 
+export interface BjttlStoryblok {
+  _uid: string;
+  component: "bjttl ";
+  [k: string]: any;
+}
+
 export interface BookingStoryblok {
   booking?: string;
   _uid: string;
@@ -313,6 +319,7 @@ export interface ButtonStoryblok {
   styles_mobile?: StylesStoryblok[];
   styles_tablet?: StylesStoryblok[];
   styles_hover?: StylesStoryblok[];
+  image_size?: "large" | "xlarge" | "small" | "xsmall" | "medium";
   _uid: string;
   component: "button";
   [k: string]: any;
@@ -907,6 +914,14 @@ export interface ErrorPageStoryblok {
 }
 
 export interface EventStoryblok {
+  title: string;
+  start: string;
+  end?: string;
+  all_day?: boolean;
+  expire_event_date?: string;
+  category?: string;
+  multiple_event_dates?: EventDateStoryblok[];
+  date_format?: DateTimeFormatStoryblok[];
   image?: {
     alt?: string;
     copyright?: string;
@@ -972,13 +987,6 @@ export interface EventStoryblok {
     | TimelineStoryblok
     | ToolbarNaviButtonStoryblok
   )[];
-  title: string;
-  start: string;
-  end?: string;
-  all_day?: boolean;
-  category?: string;
-  multiple_event_dates?: EventDateStoryblok[];
-  date_format?: DateTimeFormatStoryblok[];
   _uid: string;
   component: "event";
   [k: string]: any;
