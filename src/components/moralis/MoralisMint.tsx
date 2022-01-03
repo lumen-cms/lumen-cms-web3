@@ -37,27 +37,35 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
   const [success, setSuccess] = useState<boolean>()
 
   const mintFunction = async () => {
-    if (content.contract_token && content.moralis_mint_data.abi) {
+    if (content.contract_token && content.moralis_mint_data.abi && account) {
       const signer = library.getSigner()
+      const merkleProof: { isWhitelisted: boolean, proof: any[] } = await fetch('/api/merkle/' + account)
+        .then((r) => r.json())
+      if (content.sale === 'whitelist' && !merkleProof.isWhitelisted) {
+        setError('You are not whitelisted. You can mint in our public sale.')
+        return
+      }
       const contract = new ethers.Contract(content.contract_token, content.moralis_mint_data.abi, signer)
-      const hexProof = content.moralis_mint_data.merkleRoot.getHexProof()
       const selectedAmount = amountRef.current
       const currentCost = content.sale === 'whitelist'
         ? content.price_whitelist as string
         : content.price as string
       try {
-        await contract.functions.mint(selectedAmount, {
+        await contract.functions.mint(selectedAmount, merkleProof.proof, {
           value: ethers.utils.parseEther(currentCost).mul(selectedAmount)
         })
         setSuccess(true)
       } catch (error: any) {
-        console.error(error)
         if (error.code === 4001) {
           return
         }
         if (error?.message) {
           if (error?.message.includes('insufficient funds')) {
             setError('Your wallet does not have enough balance to purchase an item.')
+          } else if (error?.message.includes('Sale has not started yet')) {
+            setError('The sale has not started yet! Please come back later.')
+          } else if (error?.message.includes('invalid proof')) {
+            setError('You are not member of the whitelist. Either visit our Discord channel or come back when the public sale starts.')
           } else {
             setError(error.message)
           }
@@ -81,19 +89,26 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
         to <strong><i>{selectedChain.displayName}</i></strong></div>
     )
   }
-
-  return (
-    <div>
-      {error && (
-        <Alert severity={'error'} className={'py-3'}>
+  if (error) {
+    return (
+      <div className={'py-3'}>
+        <Alert severity={'error'} onClose={() => setError('')}>
           {error}
         </Alert>
-      )}
-      {success && (
-        <Alert severity={'success'} className={'py-3'}>
-          Your Transaction was successful. Welcome to the Club!
+      </div>
+    )
+  }
+  if (success) {
+    return (
+      <div className={'py-3'}>
+        <Alert severity={'success'} onClose={() => setSuccess(false)}>
+          Your Transaction was successful. Welcome to the club!
         </Alert>
-      )}
+      </div>
+    )
+  }
+  return (
+    <div>
       <LmComponentRender content={{
         component: 'flex_row',
         _uid: 'mint-flex-row',

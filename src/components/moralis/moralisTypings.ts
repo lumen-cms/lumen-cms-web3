@@ -3,7 +3,7 @@ import { MoralisMintStoryblok } from '../../typings/__generated__/components-sch
 
 export type MoralisMintData = {
   abi: any
-  merkleRoot: string
+  merkleRoot?: string
 }
 export type MoralisMintProps = {
   content: MoralisMintStoryblok & {

@@ -18,24 +18,16 @@ export const getContractAbi = async (id: string) => {
   }
 }
 
-export const getMerkleRoot = () => {
-  // @ts-ignore
-  const addresses = SSR_CONFIG.web3Whitelist as string[] || []
-  const leafNodes = addresses.map((address) => keccak256(address))
-  const tree = new MerkleTree(leafNodes, keccak256, { sortPairs: true })
-  const root = tree.getRoot().toString('hex')
-  return root
-}
 export const getContractAbiPageProps = async (item: MoralisMintStoryblok, _props: AppPageProps): Promise<MoralisMintData> => {
   let id = item.contract_token
   if (id) {
     return {
-      abi: await getContractAbi(id),
-      merkleRoot: getMerkleRoot()
+      abi: await getContractAbi(id)
+      // merkleRoot: getMerkleRoot()
     }
   }
   return {
-    abi: '',
-    merkleRoot: ''
+    abi: ''
+    // merkleRoot: ''
   }
 }
