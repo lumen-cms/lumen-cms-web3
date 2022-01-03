@@ -320,6 +320,7 @@ export interface ButtonStoryblok {
   styles_tablet?: StylesStoryblok[];
   styles_hover?: StylesStoryblok[];
   image_size?: "large" | "xlarge" | "small" | "xsmall" | "medium";
+  on_click_function?: string;
   _uid: string;
   component: "button";
   [k: string]: any;
@@ -354,6 +355,7 @@ export interface CardListStoryblok {
     | "text_align_center"
     | "text_align_right"
     | "overlay_content_no_space"
+    | "equal-heights"
   )[];
   border_radius?: "0" | "2" | "4" | "";
   shadow_effect?: "faded" | "float" | "hover" | "lightTop" | "bouncy" | "soft" | "flowUp";
@@ -441,6 +443,7 @@ export interface CardListItemStoryblok {
         [k: string]: any;
       };
   open_external?: boolean;
+  on_click_function?: string;
   _uid: string;
   component: "card_list_item";
   [k: string]: any;
@@ -1732,6 +1735,7 @@ export interface LinkStoryblok {
       };
   open_external?: boolean;
   body?: (ImageStoryblok | HeadlineStoryblok | ParagraphStoryblok | IconStoryblok | PromotionStoryblok)[];
+  on_click_function?: string;
   _uid: string;
   component: "link";
   [k: string]: any;
@@ -1894,6 +1898,11 @@ export interface MoralisButtonStoryblok {
 }
 
 export interface MoralisMintStoryblok {
+  price?: string;
+  price_whitelist?: string;
+  sale?: "none" | "whitelist" | "public" | "ended";
+  mint_amount?: number;
+  mint_amount_whitelist?: number;
   contract_token: string;
   counter_style?: HeadlineStoryblok[];
   owner_token: string;
@@ -2221,6 +2230,7 @@ export interface NavItemStoryblok {
       };
   open_external?: boolean;
   image?: string;
+  on_click_function?: string;
   _uid: string;
   component: "nav_item";
   [k: string]: any;
