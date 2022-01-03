@@ -1,6 +1,6 @@
 {
   "name": "lumen-cms-web3",
-  "version": "0.1.20",
+  "version": "0.1.21",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
