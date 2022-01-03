@@ -1,9 +1,6 @@
 import { AppPageProps } from 'lumen-cms-core/src/typings/app'
 import { MoralisMintStoryblok } from '../typings/__generated__/components-schema'
 import { MoralisMintData } from '../components/moralis/moralisTypings'
-import { MerkleTree } from 'merkletreejs'
-import keccak256 from 'keccak256'
-import { SSR_CONFIG } from '@SSR_CONFIG'
 
 export const getContractAbi = async (id: string) => {
   const ABI_URL: string = process.env.NEXT_PUBLIC_ABI_URI as string + id + '&apikey=' + process.env.ETHERSCAN_API_KEY
