@@ -2,7 +2,7 @@ import { ButtonStoryblok, FlexRowStoryblok } from '../../typings/__generated__/c
 import { LmComponentRender } from '@LmComponentRender'
 import { TextField } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { MoralisMintProps } from './moralisTypings'
 import { useWeb3React } from '@web3-react/core'
 import { ethers } from 'ethers'
@@ -34,6 +34,15 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
   } else if (content.sale === 'public' && content.mint_amount) {
     mintAmount = Number(content.mint_amount)
   }
+  const items: number[] = useMemo(() => {
+    const cur = []
+    if (mintAmount > 1) {
+      for (let i = 1; i <= mintAmount; i++) {
+        cur.push(i)
+      }
+    }
+    return cur
+  }, [mintAmount])
 
   const [error, setError] = useState<MintError | null>()
   const [success, setSuccess] = useState<boolean>()
@@ -156,27 +165,25 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
         ...content.mint_flexbox_container?.[0]
       } as FlexRowStoryblok}>
         {mintAmount > 1 && (
-          <TextField type={'number'}
-                     color={'primary'}
+          <TextField color={'primary'}
                      size={'medium'}
                      id={'lm-mint-amount'}
                      defaultValue={1}
+                     select
+                     SelectProps={{
+                       native: true
+                     }}
                      style={{
                        minWidth: `55px`
                      }}
                      onChange={event => {
                        amountRef.current = Number(event.currentTarget.value)
                      }}
-                     onBlur={event => {
-                       const blurVal = event.currentTarget.value
-                       if (blurVal && Number(blurVal) > mintAmount) {
-                         amountRef.current = Number(event.currentTarget.value)
-                       }
-                     }}
-                     inputProps={{
-                       min: 1,
-                       max: mintAmount
-                     }} />
+          >
+            {items.map(value => (
+              <option value={value} key={value}>{value}</option>
+            ))}
+          </TextField>
         )}
         <LmComponentRender
           content={{
