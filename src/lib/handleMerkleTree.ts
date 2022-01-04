@@ -11,12 +11,6 @@ const getMerkleRootProof = (address: string, addresses: string[]) => {
   }
 }
 
-const getDummyProof = () => {
-  const leaf = keccak256('0x00')
-  // const hexProof = tree.getHexProof(leaf);
-  return [leaf]
-}
-
 export default async function handleMerkleTree(req: NextApiRequest, res: NextApiResponse, whitelist: string[]) {
   const { address } = req.query
   if (typeof address === 'string') {
@@ -29,12 +23,12 @@ export default async function handleMerkleTree(req: NextApiRequest, res: NextApi
     )
     res.json({
       isWhitelisted,
-      proof: isWhitelisted ? proof : getDummyProof()
+      proof: isWhitelisted ? proof : ''
     })
   } else {
     res.json({
       isWhitelisted: false,
-      proof: getDummyProof()
+      proof: ''
     })
   }
 }

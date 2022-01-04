@@ -41,6 +41,11 @@ export default function MoralisAuth({ content }: MoralisAuthProps) {
           }
           onClick={async () => {
             // await logout()
+            window.gtag &&
+            gtag('event', 'logout', {
+              event_category: 'Auth',
+              event_label: 'Logout'
+            })
             await deactivate()
           }}
         />
@@ -71,11 +76,23 @@ export default function MoralisAuth({ content }: MoralisAuthProps) {
           }
           onClick={async () => {
             try {
-
+              window.gtag &&
+              gtag('event', 'sign_up', {
+                event_category: 'Auth',
+                event_label: 'Login MetaMask'
+              })
               await activate(injected)
-
-              // await metamask()
+              window.gtag &&
+              gtag('event', 'sign_up', {
+                event_category: 'Auth',
+                event_label: 'Login MetaMask Success'
+              })
             } catch (e) {
+              window.gtag &&
+              gtag('event', 'exception', {
+                event_category: 'Auth',
+                event_label: 'Login MetaMask Failed'
+              })
               console.log(e)
             }
           }}
@@ -97,12 +114,27 @@ export default function MoralisAuth({ content }: MoralisAuthProps) {
           }
           onClick={async () => {
             try {
+              window.gtag &&
+              gtag('event', 'sign_up', {
+                event_category: 'Auth',
+                event_label: 'Login WalletConnect'
+              })
               await activate(walletconnect, error => {
                 if (error instanceof UserRejectedRequestErrorWalletConnect) {
                   walletconnect.walletConnectProvider = null
                 }
               })
+              window.gtag &&
+              gtag('event', 'sign_up', {
+                event_category: 'Auth',
+                event_label: 'Login WalletConnect Success'
+              })
             } catch (e) {
+              window.gtag &&
+              gtag('event', 'exception', {
+                event_category: 'Auth',
+                event_label: 'Login WalletConnect Failed'
+              })
               console.log(e)
             }
           }}
