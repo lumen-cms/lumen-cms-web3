@@ -10,9 +10,22 @@ export function useEagerConnect() {
   useEffect(() => {
     injected.isAuthorized().then((isAuthorized: boolean) => {
       if (isAuthorized) {
-        activate(injected, undefined, true).catch(() => {
-          setTried(true)
-        })
+        activate(injected, undefined, true)
+          .then(() => {
+            window.gtag &&
+            gtag('event', 'sign_up', {
+              event_category: 'Auth',
+              event_label: 'Eager Connect MetaMask Success'
+            })
+          })
+          .catch(() => {
+            window.gtag &&
+            gtag('event', 'exception', {
+              event_category: 'Auth',
+              event_label: 'Eager Connect MetaMask Failed'
+            })
+            setTried(true)
+          })
       } else {
         setTried(true)
       }
