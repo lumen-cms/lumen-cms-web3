@@ -20,7 +20,7 @@ const CHAINS = {
   }
 }
 type MintError = {
-  message: string, code: 'insufficient_fund' | 'not_whitelisted' | 'sale_not_started' | 'unknown'
+  message: string, code: 'insufficient_fund' | 'not_whitelisted' | 'sale_not_started' | 'max_mint_amount_exceed' | 'unknown'
 }
 export default function MoralisMint({ content }: MoralisMintProps): JSX.Element {
   const { account, chainId, library } = useWeb3React()
@@ -100,6 +100,11 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
             currentError = {
               message: 'The sale has not started yet! Please come back later.',
               code: 'sale_not_started'
+            }
+          } else if (error?.message.includes('max mint amount exceeded')) {
+            currentError = {
+              message: 'You already minted the maximum NFTs for your wallet.',
+              code: 'max_mint_amount_exceed'
             }
           } else if (error?.message.includes('invalid proof')) {
             currentError = {
