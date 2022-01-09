@@ -8,9 +8,9 @@ import { useWeb3React } from '@web3-react/core'
 import { ethers } from 'ethers'
 
 const CHAINS = {
-  main: {
-    name: 'main',
-    displayName: 'Ethereum',
+  mainnet: {
+    name: 'mainnet',
+    displayName: 'Ethereum Mainnet',
     id: 1
   },
   rinkeby: {
@@ -25,9 +25,8 @@ type MintError = {
 export default function MoralisMint({ content }: MoralisMintProps): JSX.Element {
   const { account, chainId, library } = useWeb3React()
   const amountRef = useRef<number>(1)
-  const selectedChain = CHAINS[content.chain || 'main']
+  const selectedChain = CHAINS[content.chain || 'mainnet']
   const isCorrectChain = selectedChain?.id === chainId
-
   let mintAmount = 1
   if (content.sale === 'whitelist' && content.mint_amount_whitelist) {
     mintAmount = Number(content.mint_amount_whitelist)
