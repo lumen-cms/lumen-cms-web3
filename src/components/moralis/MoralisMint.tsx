@@ -1,6 +1,6 @@
 import { ButtonStoryblok, FlexRowStoryblok } from '../../typings/__generated__/components-schema'
 import { LmComponentRender } from '@LmComponentRender'
-import { TextField } from '@material-ui/core'
+import { MenuItem, TextField } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import { useMemo, useRef, useState } from 'react'
 import { MoralisMintProps } from './moralisTypings'
@@ -58,6 +58,8 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
         event_category: 'Mint',
         value: value
       })
+      window.fbq && fbq('track', 'InitiateCheckout', { value })
+
       const signer = library.getSigner()
       const merkleProof: { isWhitelisted: boolean, proof: any[] } = content.sale === 'whitelist' ? await fetch('/api/merkle/' + account)
         .then((r) => r.json()) : {
@@ -72,7 +74,6 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
       }
 
       const contract = new ethers.Contract(content.contract_token, content.moralis_mint_data.abi, signer)
-
       try {
         await contract.functions.mint(selectedAmount, merkleProof.isWhitelisted ? merkleProof.proof : [ethers.utils.keccak256('0x00')], {
           value: value
@@ -82,6 +83,8 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
           event_category: 'Mint',
           value: value
         })
+        window.fbq && fbq('track', 'Purchase', { value })
+
         setSuccess(true)
       } catch (error: any) {
         if (error.code === 4001) {
@@ -174,9 +177,6 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
                      id={'lm-mint-amount'}
                      defaultValue={1}
                      select
-                     SelectProps={{
-                       native: true
-                     }}
                      style={{
                        minWidth: `55px`
                      }}
@@ -185,7 +185,7 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
                      }}
           >
             {items.map(value => (
-              <option value={value} key={value}>{value}</option>
+              <MenuItem value={value} key={value}>{value}</MenuItem>
             ))}
           </TextField>
         )}

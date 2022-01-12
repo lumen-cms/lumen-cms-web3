@@ -87,6 +87,7 @@ export default function MoralisAuth({ content }: MoralisAuthProps) {
                 event_category: 'Auth',
                 event_label: 'Login MetaMask Success'
               })
+              window.fbq && fbq('track', 'Lead')
             } catch (e) {
               window.gtag &&
               gtag('event', 'exception', {
@@ -129,6 +130,7 @@ export default function MoralisAuth({ content }: MoralisAuthProps) {
                 event_category: 'Auth',
                 event_label: 'Login WalletConnect Success'
               })
+              window.fbq && fbq('track', 'Lead')
             } catch (e) {
               window.gtag &&
               gtag('event', 'exception', {

@@ -8,7 +8,8 @@ export const getContractAbi = async (id: string) => {
   if (result.ok) {
     const values = await result.json()
     const x = values.result
-    return typeof x === 'string' ? JSON.parse(x) : x
+    let resultOfFetch = typeof x === 'string' ? JSON.parse(x) : x
+    return resultOfFetch
   } else {
     console.log(result)
     throw new Error('error while fetching abi')
