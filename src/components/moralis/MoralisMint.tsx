@@ -48,7 +48,7 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
 
   const mintFunction = async () => {
     if (content.contract_token && content.moralis_mint_data.abi && account) {
-      const selectedAmount = amountRef.current
+      const selectedAmount = amountRef.current || 1
       const currentCost = content.sale === 'whitelist'
         ? content.price_whitelist as string
         : content.price as string
@@ -181,7 +181,7 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
                        minWidth: `55px`
                      }}
                      onChange={event => {
-                       amountRef.current = Number(event.currentTarget.value)
+                       amountRef.current = Number(event.target.value)
                      }}
           >
             {items.map(value => (
