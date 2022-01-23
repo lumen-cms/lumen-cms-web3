@@ -15,6 +15,7 @@ export default async function handleMerkleTree(req: NextApiRequest, res: NextApi
   const { address } = req.query
   if (typeof address === 'string') {
     const { root, proof } = getMerkleRootProof(address, whitelist)
+    console.log(root, proof)
     let isWhitelisted = proof.length > 0
     res.setHeader(
       'Cache-Control',
