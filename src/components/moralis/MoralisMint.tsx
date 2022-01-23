@@ -6,24 +6,16 @@ import { useMemo, useRef, useState } from 'react'
 import { MoralisMintProps } from './moralisTypings'
 import { useWeb3React } from '@web3-react/core'
 import { ethers } from 'ethers'
+import { CHAINS } from './chainsConfig'
 
-const CHAINS = {
-  mainnet: {
-    name: 'mainnet',
-    displayName: 'Ethereum Mainnet',
-    id: 1
-  },
-  rinkeby: {
-    name: 'rinkeby',
-    displayName: 'Rinkeby Test',
-    id: 4
-  }
-}
+
 type MintError = {
   message: string, code: 'insufficient_fund' | 'not_whitelisted' | 'sale_not_started' | 'max_mint_amount_exceed' | 'unknown'
 }
+const envAbi = process.env.NEXT_PUBLIC_ABI ? JSON.parse(process.env.NEXT_PUBLIC_ABI) : null
 export default function MoralisMint({ content }: MoralisMintProps): JSX.Element {
   const { account, chainId, library } = useWeb3React()
+  const abi = envAbi || content.moralis_mint_data?.abi
   const amountRef = useRef<number>(1)
   const selectedChain = CHAINS[content.chain || 'mainnet']
   const isCorrectChain = selectedChain?.id === chainId
@@ -47,7 +39,7 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
   const [success, setSuccess] = useState<boolean>()
 
   const mintFunction = async () => {
-    if (content.contract_token && content.moralis_mint_data.abi && account) {
+    if (content.contract_token && abi && account) {
       const selectedAmount = amountRef.current || 1
       const currentCost = content.sale === 'whitelist'
         ? content.price_whitelist as string
@@ -73,11 +65,18 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
         return
       }
 
-      const contract = new ethers.Contract(content.contract_token, content.moralis_mint_data.abi, signer)
+      const contract = new ethers.Contract(content.contract_token, abi, signer)
       try {
-        await contract.functions.mint(selectedAmount, merkleProof.isWhitelisted ? merkleProof.proof : [ethers.utils.keccak256('0x00')], {
-          value: value
-        })
+        if (process.env.NEXT_PUBLIC_MINT_CALL === 'wild') {
+          console.log(account)
+          await contract.functions.mint(account, {
+            value: value
+          })
+        } else {
+          await contract.functions.mint(selectedAmount, merkleProof.isWhitelisted ? merkleProof.proof : [ethers.utils.keccak256('0x00')], {
+            value: value
+          })
+        }
         window.gtag &&
         gtag('event', 'purchase', {
           event_category: 'Mint',
@@ -214,5 +213,4 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
       )}
     </div>
   )
-
 }

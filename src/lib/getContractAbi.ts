@@ -18,14 +18,13 @@ export const getContractAbi = async (id: string) => {
 
 export const getContractAbiPageProps = async (item: MoralisMintStoryblok, _props: AppPageProps): Promise<MoralisMintData> => {
   let id = item.contract_token
-  if (id) {
+  // ignore contract fetch if ENV var exists
+  if (id && !process.env.NEXT_PUBLIC_ABI) {
     return {
       abi: await getContractAbi(id)
-      // merkleRoot: getMerkleRoot()
     }
   }
   return {
     abi: ''
-    // merkleRoot: ''
   }
 }

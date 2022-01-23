@@ -1330,6 +1330,7 @@ export interface GlobalStoryblok {
     | ImageStoryblok
     | DividerStoryblok
     | ToolbarNaviButtonStoryblok
+    | FlexRowStoryblok
   )[];
   drawer_variant?: "persistent" | "temporary";
   mobile_nav_breakpoint?: "sm" | "md" | "lg" | "xl";
@@ -1948,8 +1949,7 @@ export interface MoralisMintStoryblok {
     | ToolbarNaviButtonStoryblok
   )[];
   contract_token: string;
-  owner_token: string;
-  chain?: "mainnet" | "goerli" | "kovan" | "rinkeby" | "ropsten";
+  chain?: "mainnet" | "goerli" | "kovan" | "rinkeby" | "ropsten" | "polygon" | "mumbai";
   presale_get_param?: string;
   fallback_not_started?: (
     | AccordionStoryblok
