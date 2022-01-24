@@ -68,7 +68,6 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
       const contract = new ethers.Contract(content.contract_token, abi, signer)
       try {
         if (process.env.NEXT_PUBLIC_MINT_CALL === 'wild') {
-          console.log(account)
           await contract.functions.mint(account, {
             value: value
           })
@@ -89,25 +88,26 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
         if (error.code === 4001) {
           return
         }
-        if (error?.message) {
+        const message = error?.data?.message || error?.message
+        if (message) {
           let currentError: MintError = {
             message: error.message.split('(')[0],
             code: 'unknown'
           }
 
-          if (error?.message.includes('insufficient funds')) {
+          if (message?.includes('insufficient funds')) {
             currentError = { code: 'insufficient_fund', message: 'You don\'t have enough funds in your wallet.' }
-          } else if (error?.message.includes('Sale has not started yet')) {
+          } else if (message?.includes('Sale has not started yet')) {
             currentError = {
               message: 'The sale has not started yet! Please come back later.',
               code: 'sale_not_started'
             }
-          } else if (error?.message.includes('max mint amount exceeded')) {
+          } else if (message?.includes('max mint amount exceeded')) {
             currentError = {
               message: 'You already minted the maximum NFTs for your wallet.',
               code: 'max_mint_amount_exceed'
             }
-          } else if (error?.message.includes('invalid proof')) {
+          } else if (message?.includes('invalid proof')) {
             currentError = {
               message: 'You are not member of the whitelist. If you are make sure you have the right account connected.',
               code: 'not_whitelisted'
