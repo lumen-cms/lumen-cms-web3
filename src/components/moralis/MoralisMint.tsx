@@ -68,7 +68,7 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
       const contract = new ethers.Contract(content.contract_token, abi, signer)
       try {
         if (process.env.NEXT_PUBLIC_MINT_CALL === 'wild') {
-          await contract.functions.mint(account, {
+          await contract.functions.mint(selectedAmount, account, {
             value: value
           })
         } else {
