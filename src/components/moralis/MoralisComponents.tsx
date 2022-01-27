@@ -11,6 +11,9 @@ LmCoreComponents.moralis_button = dynamic(() => import(/* webpackChunkName: 'web
 LmCoreComponents.moralis_mint = dynamic(() => import(/* webpackChunkName: 'web3' */'./MoralisMint'), {
   ssr: false
 })
+LmCoreComponents.moralis_data = dynamic(() => import(/* webpackChunkName: 'web3' */'./MoralisData'), {
+  ssr: false
+})
 // LmCoreComponents.lm_app_providers.push(LmMoralisProvider)
 LmCoreComponents.lm_app_providers.push(Web3Provider)
 

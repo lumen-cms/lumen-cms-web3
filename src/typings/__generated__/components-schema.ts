@@ -1877,7 +1877,7 @@ export interface LogoStoryblok {
 }
 
 export interface MoralisStoryblok {
-  body?: (MoralisButtonStoryblok | MoralisMintStoryblok)[];
+  body?: (MoralisButtonStoryblok | MoralisMintStoryblok | MoralisDataStoryblok)[];
   _uid: string;
   component: "moralis";
   [k: string]: any;
@@ -1889,6 +1889,16 @@ export interface MoralisButtonStoryblok {
   logout?: (ButtonStoryblok | ImageStoryblok)[];
   _uid: string;
   component: "moralis_button";
+  [k: string]: any;
+}
+
+export interface MoralisDataStoryblok {
+  contract_token?: string;
+  chain?: "mainnet" | "goerli" | "kovan" | "rinkeby" | "ropsten" | "polygon" | "mumbai";
+  data_values?: string;
+  richtext?: any;
+  _uid: string;
+  component: "moralis_data";
   [k: string]: any;
 }
 

@@ -9275,10 +9275,10 @@ lru-queue@^0.1.0:
   dependencies:
     es5-ext "~0.10.2"
 
-lumen-cms-core@^0.100.21:
-  version "0.100.21"
-  resolved "https://registry.yarnpkg.com/lumen-cms-core/-/lumen-cms-core-0.100.21.tgz#3ed29818b6e254428ff0feffabe9aceb03350cbb"
-  integrity sha512-VZJzDYCjbY+ynBcjzuuiY4tx5EIaiex9abrrF/t4rfKOC9fs3QYd0UZDTZrSqpBmK+TBgO973NyZhdLxnVjETg==
+lumen-cms-core@^0.100.22:
+  version "0.100.22"
+  resolved "https://registry.yarnpkg.com/lumen-cms-core/-/lumen-cms-core-0.100.22.tgz#df43d1bfcdc709246685d286d1c50a90c4533220"
+  integrity sha512-HXv6E8n4kRm/da6yfJoE7yVr86dg29pAZ4N4ZIN+HBJomnuymdkR71Begk8YBZqZkPsQe+S/SfdiG0zBTwv8/w==
   dependencies:
     "@auth0/auth0-react" "^1.8.0"
     "@charlietango/use-script" "2.2.0"
@@ -12830,6 +12830,11 @@ swr@1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/swr/-/swr-1.1.2.tgz#9f3de2541931fccf03c48f322f1fc935a7551612"
   integrity sha512-UsM0eo5T+kRPyWFZtWRx2XR5qzohs/LS4lDC0GCyLpCYFmsfTk28UCVDbOE9+KtoXY4FnwHYiF+ZYEU3hnJ1lQ==
+
+swr@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/swr/-/swr-1.2.0.tgz#8649f6e9131ce94bbcf7ffd65c21334da3d1ec20"
+  integrity sha512-C3IXeKOREn0jQ1ewXRENE7ED7jjGbFTakwB64eLACkCqkF/A0N2ckvpCTftcaSYi5yV36PzoehgVCOVRmtECcA==
 
 symbol.prototype.description@^1.0.0:
   version "1.0.5"

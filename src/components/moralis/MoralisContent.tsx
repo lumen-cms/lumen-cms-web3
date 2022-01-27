@@ -6,7 +6,6 @@ type MoralisProps = {
 }
 export default function MoralisContent({ content }: MoralisProps): JSX.Element {
   const { body } = content
-console.log("moralis content", body)
   return (
     <div className={'lm-moralis'}>
       {body?.map(block =>
