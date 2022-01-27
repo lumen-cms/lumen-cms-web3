@@ -2,7 +2,6 @@ import { MoralisDataStoryblok } from '../../typings/__generated__/components-sch
 import { useWeb3React } from '@web3-react/core'
 import { CHAINS } from './chainsConfig'
 import useSWR from 'swr'
-import { useEffect } from 'react'
 import { Web3Provider } from '@ethersproject/providers'
 import { ethers } from 'ethers'
 import { renderRichText } from 'lumen-cms-core/src/components/paragraph/renderRichText'
@@ -46,23 +45,9 @@ export default function MoralisData({ content }: MoralisDataProps) {
     data,
     isValidating,
     mutate
-  } = useSWR((library && richtext) ? [`/api/contract/${contract_token}`, chainId, data_values, 'latest'] : null, {
+  } = useSWR((library && richtext) ? [`/api/contract/${contract_token}`, chainId, data_values] : null, {
     fetcher: fetcher
   })
-  useEffect(
-    () => {
-      library?.on('block', () => {
-        if (!isValidating) {
-          mutate(undefined, true)
-        }
-      })
-      return () => {
-        library?.removeAllListeners()
-      }
-    },
-    // only on mount
-    [library, mutate, isValidating]
-  )
 
   if (!isCorrectChain) {
     return (
@@ -70,7 +55,7 @@ export default function MoralisData({ content }: MoralisDataProps) {
         to <strong><i>{selectedChain.displayName}</i></strong></div>
     )
   }
-  if (!richtext || isValidating) {
+  if (!richtext) {
     return null
   }
   let stringify = JSON.stringify(richtext)
@@ -78,6 +63,8 @@ export default function MoralisData({ content }: MoralisDataProps) {
   functionNames.forEach((key, iteration) => {
     if (data) {
       stringify = stringify.replaceAll(`{${key}}`, data?.[iteration])
+    } else {
+      stringify = stringify.replaceAll(`{${key}}`, '')
     }
   })
   return (
