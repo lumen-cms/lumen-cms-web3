@@ -3,25 +3,9 @@ import { useWeb3React } from '@web3-react/core'
 import { CHAINS } from './chainsConfig'
 import useSWR from 'swr'
 import { Web3Provider } from '@ethersproject/providers'
-import { ethers } from 'ethers'
 import { renderRichText } from 'lumen-cms-core/src/components/paragraph/renderRichText'
 
-type MoralisDataProps = {
-  content: MoralisDataStoryblok
-}
 
-const envAbi = process.env.NEXT_PUBLIC_ABI ? JSON.parse(process.env.NEXT_PUBLIC_ABI) : null
-
-
-const valueParser = (val: any) => {
-  const value = val?.[0]
-  if (value?._isBigNumber) {
-    const big = value.toBigInt()
-    const number = Number(big)
-    return number > 100000 ? ethers.utils.formatEther(value) : number
-  }
-  return val
-}
 const fetcher = async (...args: string[]) => {
   const [path, chain, functions] = args
   const functionNames = (functions || '').split(',').map(i => i.trim())
@@ -35,6 +19,9 @@ const fetcher = async (...args: string[]) => {
   return fetch(currentPathToApi).then(r => r.json())
 }
 
+type MoralisDataProps = {
+  content: MoralisDataStoryblok
+}
 
 export default function MoralisData({ content }: MoralisDataProps) {
   const { contract_token, richtext, chain, data_values } = content
