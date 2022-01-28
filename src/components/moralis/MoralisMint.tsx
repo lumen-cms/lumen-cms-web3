@@ -206,7 +206,7 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
             {content.success_message?.[0] ? content.success_message?.map(blok => (
                 <LmComponentRender content={blok} key={blok._uid} />
               )) :
-              'Your Transaction was successful. Welcome to the club!'
+              'Your mint transaction was successful!'
             }
           </Alert>
         </div>
