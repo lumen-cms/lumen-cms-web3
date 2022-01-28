@@ -1,8 +1,6 @@
 import { MoralisDataStoryblok } from '../../typings/__generated__/components-schema'
-import { useWeb3React } from '@web3-react/core'
 import { CHAINS } from './chainsConfig'
 import useSWR from 'swr'
-import { Web3Provider } from '@ethersproject/providers'
 import { renderRichText } from 'lumen-cms-core/src/components/paragraph/renderRichText'
 
 
@@ -25,9 +23,7 @@ type MoralisDataProps = {
 
 export default function MoralisData({ content }: MoralisDataProps) {
   const { contract_token, richtext, chain, data_values } = content
-  const { chainId } = useWeb3React<Web3Provider>()
   const selectedChain = CHAINS[chain || 'mainnet'] || 1
-  const isCorrectChain = selectedChain.id === chainId
   const {
     data
   } = useSWR((richtext) ? [`/api/contract/${contract_token}`, selectedChain.id, data_values] : null, {
