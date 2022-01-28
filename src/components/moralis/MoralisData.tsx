@@ -25,23 +25,15 @@ type MoralisDataProps = {
 
 export default function MoralisData({ content }: MoralisDataProps) {
   const { contract_token, richtext, chain, data_values } = content
-  const { library, chainId } = useWeb3React<Web3Provider>()
-  const selectedChain = CHAINS[chain || 'mainnet']
-  const isCorrectChain = selectedChain?.id === chainId
+  const { chainId } = useWeb3React<Web3Provider>()
+  const selectedChain = CHAINS[chain || 'mainnet'] || 1
+  const isCorrectChain = selectedChain.id === chainId
   const {
-    data,
-    isValidating,
-    mutate
-  } = useSWR((library && richtext) ? [`/api/contract/${contract_token}`, chainId, data_values] : null, {
+    data
+  } = useSWR((richtext) ? [`/api/contract/${contract_token}`, selectedChain.id, data_values] : null, {
     fetcher: fetcher
   })
 
-  if (!isCorrectChain) {
-    return (
-      <div className={'py-3'}>You are not in the correct Network. Please change
-        to <strong><i>{selectedChain.displayName}</i></strong></div>
-    )
-  }
   if (!richtext) {
     return null
   }
