@@ -1,6 +1,6 @@
 {
   "name": "lumen-cms-web3",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -16,8 +16,8 @@
   "dependencies": {
     "@web3-react/core": "6.1.9",
     "@web3-react/injected-connector": "6.0.7",
-    "@web3-react/walletconnect-connector": "6.2.10",
-    "ethers": "5.5.3",
+    "@web3-react/walletconnect-connector": "6.2.8",
+    "ethers": "5.5.2",
     "keccak256": "1.0.6",
     "merkletreejs": "0.2.27"
   },

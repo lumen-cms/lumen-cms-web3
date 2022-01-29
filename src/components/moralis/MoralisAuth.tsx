@@ -116,7 +116,7 @@ export default function MoralisAuth({ content }: MoralisAuthProps) {
           onClick={async () => {
             try {
               window.gtag &&
-              gtag('event', 'sign_up', {
+              window.gtag('event', 'sign_up', {
                 event_category: 'Auth',
                 event_label: 'Login WalletConnect'
               })
@@ -126,18 +126,19 @@ export default function MoralisAuth({ content }: MoralisAuthProps) {
                 }
               })
               window.gtag &&
-              gtag('event', 'sign_up', {
+              window.gtag('event', 'sign_up', {
                 event_category: 'Auth',
                 event_label: 'Login WalletConnect Success'
               })
-              window.fbq && fbq('track', 'Lead')
+              window.fbq && window.fbq('track', 'Lead')
             } catch (e) {
+
+              console.log(e)
               window.gtag &&
-              gtag('event', 'exception', {
+              window.gtag('event', 'exception', {
                 event_category: 'Auth',
                 event_label: 'Login WalletConnect Failed'
               })
-              console.log(e)
             }
           }}
         >
