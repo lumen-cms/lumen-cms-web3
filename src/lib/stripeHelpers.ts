@@ -19,6 +19,9 @@ export function formatAmountForStripe(
     currency: currency,
     currencyDisplay: 'symbol'
   })
+  if (Number.isSafeInteger(amount)) {
+    return amount
+  }
   const parts = numberFormat.formatToParts(amount)
   let zeroDecimalCurrency: boolean = true
   for (let part of parts) {

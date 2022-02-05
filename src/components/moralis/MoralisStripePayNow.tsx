@@ -8,12 +8,7 @@ import { MoralisMintProps, MoralisStripePayNowProps } from './moralisTypings'
 
 
 
-export default function MoralisStripePayNow({
-  mintAmount,
-  contractToken,
-  userToken,
-  content
-}: MoralisStripePayNowProps) {
+export default function MoralisStripePayNow(props: MoralisStripePayNowProps) {
   const [open, setOpen] = useState<boolean>(false)
   return (
     <>
@@ -22,7 +17,7 @@ export default function MoralisStripePayNow({
           component: 'button',
           _uid: '123123',
           label: 'Pay Now',
-          ...content.stripe_btn_style?.[0]
+          ...props.content.stripe_btn_style?.[0]
         }}
         onClick={() => setOpen(true)}
       />
@@ -42,8 +37,7 @@ export default function MoralisStripePayNow({
             maxWidth: 500,
             margin: '0 auto'
           }}>
-            Values::: {mintAmount()} {contractToken} {userToken}
-            <MoralisStripeProvider>
+            <MoralisStripeProvider {...props}>
               <MoralisStripeForm />
             </MoralisStripeProvider>
           </div>
