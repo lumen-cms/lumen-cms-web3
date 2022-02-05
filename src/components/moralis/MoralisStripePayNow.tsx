@@ -4,13 +4,9 @@ import { Dialog, DialogContent, Toolbar } from '@material-ui/core'
 import MoralisStripeForm from './MoralisStripeForm'
 import MoralisStripeProvider from './MoralisStripeProvider'
 import { ButtonStoryblok } from '../../typings/__generated__/components-schema'
-import { MoralisMintProps } from './moralisTypings'
+import { MoralisMintProps, MoralisStripePayNowProps } from './moralisTypings'
 
-type MoralisStripePayNowProps = MoralisMintProps & {
-  mintAmount: () => number
-  contractToken: string
-  userToken: string
-}
+
 
 export default function MoralisStripePayNow({
   mintAmount,

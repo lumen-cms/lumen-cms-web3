@@ -202,7 +202,7 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
           onClick={async () => {
             await mintFunction()
           }} />
-        {process.env.NEXT_PUBLIC_STRIPE_PK && (
+        {process.env.NEXT_PUBLIC_STRIPE_PK && content.price_fiat && (
           <MoralisStripePayNow mintAmount={() => amountRef.current}
                                contractToken={content.contract_token}
                                userToken={account}

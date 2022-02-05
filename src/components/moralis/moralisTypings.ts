@@ -11,3 +11,9 @@ export type MoralisMintProps = {
   }
 }
 
+export type MoralisStripePayNowProps = MoralisMintProps & {
+  mintAmount: () => number
+  contractToken: string
+  userToken: string
+}
+
