@@ -7,7 +7,11 @@ import { MoralisMintProps } from './moralisTypings'
 import { useWeb3React } from '@web3-react/core'
 import { ethers } from 'ethers'
 import { CHAINS } from './chainsConfig'
+import dynamic from 'next/dynamic'
 
+const MoralisStripePayNow = dynamic(() => import('./MoralisStripePayNow'), {
+  ssr: false
+})
 
 type MintError = {
   message: string, code: 'insufficient_fund' | 'not_whitelisted' | 'sale_not_started' | 'max_mint_amount_exceed' | 'unknown'
@@ -198,6 +202,12 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
           onClick={async () => {
             await mintFunction()
           }} />
+        {process.env.NEXT_PUBLIC_STRIPE_PK && (
+          <MoralisStripePayNow mintAmount={() => amountRef.current}
+                               contractToken={content.contract_token}
+                               userToken={account}
+                               content={content} />
+        )}
 
       </LmComponentRender>
       {success && (

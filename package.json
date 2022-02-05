@@ -19,7 +19,8 @@
     "@web3-react/walletconnect-connector": "6.2.8",
     "ethers": "5.5.2",
     "keccak256": "1.0.6",
-    "merkletreejs": "0.2.27"
+    "merkletreejs": "0.2.27",
+    "stripe": "^8.202.0"
   },
   "peerDependencies": {
     "lumen-cms-core": ">=0.100.0"
@@ -34,6 +35,8 @@
     "@storybook/builder-webpack5": "^6.3.12",
     "@storybook/manager-webpack5": "^6.3.12",
     "@storybook/react": "^6.3.12",
+    "@stripe/react-stripe-js": "^1.7.0",
+    "@stripe/stripe-js": "^1.22.0",
     "@types/node": "16.11.6",
     "@types/react": "17.0.34",
     "babel-loader": "^8.2.3",
