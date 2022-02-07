@@ -1,9 +1,11 @@
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { useEffect, useState } from 'react'
 import { Button } from '@material-ui/core'
+import { MoralisStripePayNowProps } from './moralisTypings'
 
 
-export default function MoralisStripeForm() {
+export default function MoralisStripeForm(props: MoralisStripePayNowProps) {
+  const { content } = props
   const stripe = useStripe()
   const elements = useElements()
 
@@ -57,7 +59,9 @@ export default function MoralisStripeForm() {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: 'http://localhost:3000'
+        return_url: content.return_url
+          ? content.return_url.startsWith('http') ? content.return_url : window.location.origin + content.return_url
+          : window.location.origin
       }
     })
 
