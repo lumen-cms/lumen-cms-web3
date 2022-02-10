@@ -18,5 +18,6 @@ export const verifyStripeWebhook = async (req: NextApiRequest, res: NextApiRespo
     if (err! instanceof Error) console.log(err)
     console.log(`❌ Error message: ${errorMessage}`)
     res.status(400).send(`Webhook Error: ${errorMessage}`)
+    return
   }
 }

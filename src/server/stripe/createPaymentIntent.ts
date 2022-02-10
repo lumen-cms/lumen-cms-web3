@@ -1,6 +1,5 @@
 import { CURRENCY, MAX_AMOUNT, MIN_AMOUNT, StripeRequestBodyProps } from '../../lib/stripeConfig'
 import Stripe from 'stripe'
-import { formatAmountForStripe } from '../../lib/stripeHelpers'
 
 type CreatePaymentIntentProps = StripeRequestBodyProps
 const stripe = new Stripe(process.env.STRIPE_SECRET!, {
@@ -21,7 +20,7 @@ export const createPaymentIntent = async ({
   // Create PaymentIntent from body params.
   const params: Stripe.PaymentIntentCreateParams = {
     // payment_method_types: ['card'],
-    amount: formatAmountForStripe(paymentAmount, CURRENCY),
+    amount: paymentAmount,
     currency: CURRENCY,
     automatic_payment_methods: {
       enabled: true
