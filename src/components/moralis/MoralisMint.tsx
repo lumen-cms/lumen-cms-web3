@@ -206,7 +206,8 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
           <MoralisStripePayNow mintAmount={() => amountRef.current}
                                contractToken={content.contract_token}
                                userToken={account}
-                               content={content} />
+                               content={content}
+                               chainId={chainId}/>
         )}
 
       </LmComponentRender>

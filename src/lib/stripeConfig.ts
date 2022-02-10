@@ -6,8 +6,10 @@ export const MAX_AMOUNT = 5000.0
 export const AMOUNT_STEP = 5.0
 
 export type StripeRequestBodyProps = {
-  amount: number | string
-  nftAmount: number | string,
+  amount: string
+  nftAmount: string,
   walletToken: string
   contractToken: string
+  chainId: string
+  airdropped?: string
 }

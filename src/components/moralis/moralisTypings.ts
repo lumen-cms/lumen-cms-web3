@@ -15,5 +15,7 @@ export type MoralisStripePayNowProps = MoralisMintProps & {
   mintAmount: () => number
   contractToken: string
   userToken: string
+  airdropped?: string
+  chainId: number
 }
 

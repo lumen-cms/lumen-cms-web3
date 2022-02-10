@@ -9,24 +9,25 @@ import { MoralisStripePayNowProps } from './moralisTypings'
 // recreating the `Stripe` object on every render.
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PK!)
 
-const fetcher = (url: string, amount: string, nftAmount: string, contractToken: string, userToken: string) => {
+const fetcher = (url: string, amount: string, nftAmount: string, contractToken: string, userToken: string, chainId: string) => {
   const query = new URLSearchParams()
   query.append('amount', amount)
   query.append('contractToken', contractToken)
   query.append('walletToken', userToken)
   query.append('nftAmount', nftAmount)
+  query.append('chainId', chainId)
   return fetch(url + '?' + query.toString()).then(r => r.json())
 }
 const MoralisStripeProvider: FC<MoralisStripePayNowProps> = ({
   children,
-  contractToken, userToken, mintAmount, content: { price_fiat }
+  contractToken, userToken, mintAmount, chainId, content: { price_fiat }
 }) => {
   const theme = useTheme()
   const price = mintAmount() * Number(price_fiat)
   const {
     isValidating,
     data
-  } = useSWR([`/api/stripe/create-payment-intent`, price, mintAmount(), contractToken, userToken], {
+  } = useSWR([`/api/stripe/create-payment-intent`, price, mintAmount(), contractToken, userToken, chainId], {
     fetcher,
     revalidateOnFocus: false,
     revalidateOnReconnect: false

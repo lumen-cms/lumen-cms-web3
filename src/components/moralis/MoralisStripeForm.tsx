@@ -2,10 +2,12 @@ import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { useEffect, useState } from 'react'
 import { Button } from '@material-ui/core'
 import { MoralisStripePayNowProps } from './moralisTypings'
+import { renderRichText } from 'lumen-cms-core/src/components/paragraph/renderRichText'
 
 
 export default function MoralisStripeForm(props: MoralisStripePayNowProps) {
-  const { content } = props
+  const { content, contractToken, userToken, mintAmount } = props
+  const { checkout_content, price_fiat } = content
   const stripe = useStripe()
   const elements = useElements()
 
@@ -78,20 +80,30 @@ export default function MoralisStripeForm(props: MoralisStripePayNowProps) {
 
     setIsLoading(false)
   }
+  let stringify = checkout_content ? JSON.stringify(checkout_content) : ''
+  stringify = stringify.replaceAll('{contractToken}', `${contractToken}`)
+  stringify = stringify.replaceAll('{userToken}', `${userToken}`)
+  const currentMintAmount = mintAmount()
+  stringify = stringify.replaceAll('{mintAmount}', `${currentMintAmount}`)
+  stringify = stringify.replaceAll('{price}', `${price_fiat}`)
+  if (price_fiat) {
+    const totalPrice = price_fiat * currentMintAmount
+    stringify = stringify.replaceAll('{priceTotal}', `${totalPrice}`)
+  }
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
+      <div className={'lm-checkout__data'}>
+        {renderRichText(JSON.parse(stringify))}
+      </div>
       <PaymentElement id="payment-element" />
       <div style={{ marginTop: '16px' }}>
-
         <Button fullWidth
                 color={'primary'}
                 variant={'contained'}
                 disabled={isLoading || !stripe || !elements}
                 id="submit"
                 type={'submit'}>
-        <span id="button-text">
-          {isLoading ? <div className="spinner" id="spinner"></div> : 'Pay now'}
-        </span>
+          Pay now
         </Button>
       </div>
       {/* Show any error or success messages */}

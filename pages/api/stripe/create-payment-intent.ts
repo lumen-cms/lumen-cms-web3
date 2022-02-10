@@ -4,16 +4,9 @@ import { createPaymentIntent } from '../../../src/server/stripe/createPaymentInt
 
 
 export default async function createPaymentIntentApi(req: NextApiRequest, res: NextApiResponse) {
-  const {
-    amount,
-    walletToken,
-    contractToken,
-    nftAmount
-  }: StripeRequestBodyProps = req.method === 'POST' ? req.body : req.query
+  const props: StripeRequestBodyProps = req.method === 'POST' ? req.body : req.query
   try {
-    const paymentIntent = await createPaymentIntent({
-      amount, walletToken, contractToken, nftAmount
-    })
+    const paymentIntent = await createPaymentIntent(props)
     res.status(200).json(paymentIntent)
   } catch (err: any) {
     console.log(err)

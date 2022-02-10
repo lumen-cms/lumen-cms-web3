@@ -10,7 +10,8 @@ export const createPaymentIntent = async ({
   amount,
   nftAmount,
   contractToken,
-  walletToken
+  walletToken,
+  chainId
 }: CreatePaymentIntentProps) => {
   const paymentAmount = Number(amount)
   // Validate the amount that was passed from the client.
@@ -28,15 +29,22 @@ export const createPaymentIntent = async ({
     metadata: {
       walletToken: walletToken || '',
       contractToken: contractToken || '',
-      nftAmount: nftAmount ? Number(nftAmount) : 0
+      nftAmount: `${nftAmount}`,
+      chainId: `${chainId}`
     }
   }
-  console.log('inside payment', params)
   return await stripe.paymentIntents.create(
     params
   )
 }
 
-export const retrievePayment = async (intentId: string) => {
+export const retrievePaymentIntent = async (intentId: string) => {
   return await stripe.paymentIntents.retrieve(intentId)
 }
+
+export const updatePaymentIntent = async (intentId: string, metadata: Stripe.PaymentIntent['metadata']) => {
+  return await stripe.paymentIntents.update(intentId, {
+    metadata
+  })
+}
+

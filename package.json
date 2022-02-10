@@ -20,6 +20,8 @@
     "ethers": "5.5.2",
     "keccak256": "1.0.6",
     "merkletreejs": "0.2.27",
+    "micro": "^9.3.4",
+    "micro-cors": "^0.1.1",
     "stripe": "^8.202.0"
   },
   "peerDependencies": {
@@ -38,6 +40,8 @@
     "@stripe/react-stripe-js": "^1.7.0",
     "@stripe/stripe-js": "^1.22.0",
     "@types/jest": "^27.4.0",
+    "@types/micro": "^7.3.6",
+    "@types/micro-cors": "^0.1.2",
     "@types/node": "16.11.6",
     "@types/react": "17.0.34",
     "babel-loader": "^8.2.3",

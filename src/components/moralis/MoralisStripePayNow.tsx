@@ -4,8 +4,7 @@ import { Dialog, DialogContent, Toolbar } from '@material-ui/core'
 import MoralisStripeForm from './MoralisStripeForm'
 import MoralisStripeProvider from './MoralisStripeProvider'
 import { ButtonStoryblok } from '../../typings/__generated__/components-schema'
-import { MoralisMintProps, MoralisStripePayNowProps } from './moralisTypings'
-
+import { MoralisStripePayNowProps } from './moralisTypings'
 
 
 export default function MoralisStripePayNow(props: MoralisStripePayNowProps) {
@@ -38,7 +37,7 @@ export default function MoralisStripePayNow(props: MoralisStripePayNowProps) {
             margin: '0 auto'
           }}>
             <MoralisStripeProvider {...props}>
-              <MoralisStripeForm />
+              <MoralisStripeForm {...props} />
             </MoralisStripeProvider>
           </div>
         </DialogContent>

@@ -1,11 +1,11 @@
-import { createPaymentIntent, retrievePayment } from './createPaymentIntent'
+import { createPaymentIntent, retrievePaymentIntent, updatePaymentIntent } from './createPaymentIntent'
 import { StripeRequestBodyProps } from '../../lib/stripeConfig'
 
 describe('test stripe payment', function() {
   test('test intent', async () => {
     const props: StripeRequestBodyProps = {
-      amount: 100,
-      nftAmount: 1,
+      amount: '100',
+      nftAmount: '1',
       walletToken: '123',
       contractToken: '123'
     }
@@ -15,7 +15,16 @@ describe('test stripe payment', function() {
     expect(metadata.walletToken).toBe(props.walletToken)
     expect(metadata.contractToken).toBe(props.contractToken)
 
-    const ret = await retrievePayment(id)
-    console.log(ret)
+    const { metadata: meta2 } = await retrievePaymentIntent(id)
+    expect(meta2.nftAmount).toBe(`${props.nftAmount}`)
+    expect(meta2.walletToken).toBe(props.walletToken)
+    expect(meta2.contractToken).toBe(props.contractToken)
+
+    const { metadata: meta3 } = await updatePaymentIntent(id, { ...props, airdropped: '1' })
+    expect(meta3.nftAmount).toBe(`${props.nftAmount}`)
+    expect(meta3.walletToken).toBe(props.walletToken)
+    expect(meta3.contractToken).toBe(props.contractToken)
+    expect(meta3.airdropped).toBe('1')
+
   })
 })
