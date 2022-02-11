@@ -10,7 +10,8 @@ export const verifyStripeWebhook = async (req: NextApiRequest, res: NextApiRespo
   try {
     const buf = await buffer(req)
     const sig = req.headers['stripe-signature']!
-    const event = stripe.webhooks.constructEvent(buf.toString(), sig, process.env.STRIPE_WEBHOOK_SK as string)
+    const whSecret = req.url?.endsWith('test') ? process.env.STRIPE_WEBHOOK_SK_TEST : process.env.STRIPE_WEBHOOK_SK
+    const event = stripe.webhooks.constructEvent(buf.toString(), sig, whSecret as string)
     return event
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : 'Unknown error'

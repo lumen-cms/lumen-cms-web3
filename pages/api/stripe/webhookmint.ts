@@ -17,7 +17,7 @@ const cors = Cors({
 
 
 const webhookApi = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method === 'POST') {
+  if (req.method === 'POST' && req.headers['stripe-signature']) {
     const event = await verifyStripeWebhook(req, res)
     if (event?.type) {
       if (event.type === 'payment_intent.succeeded') {
@@ -25,13 +25,17 @@ const webhookApi = async (req: NextApiRequest, res: NextApiResponse) => {
         const paymentId = paymentIntent.id
         const metadata = paymentIntent.metadata as StripeRequestBodyProps
         if (paymentId && metadata.contractToken && metadata.nftAmount && metadata.walletToken && metadata.chainId && !metadata.airdropped) {
-          const success = await airdropNft({
+          const dropped = await airdropNft({
             airdropWallet: metadata.walletToken,
             contractToken: metadata.contractToken,
             amount: Number(metadata.nftAmount),
             chainId: metadata.chainId
           })
-          if (success) {
+          if (typeof dropped !== 'boolean' && dropped?.error) {
+            res.status(500).send(dropped)
+            return
+          }
+          if (dropped) {
             const newMetadata = {
               ...metadata,
               airdropped: new Date().toISOString()

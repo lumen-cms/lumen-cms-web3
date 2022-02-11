@@ -95,7 +95,23 @@ export default function MoralisStripeForm(props: MoralisStripePayNowProps) {
       <div className={'lm-checkout__data'}>
         {renderRichText(JSON.parse(stringify))}
       </div>
-      <PaymentElement id="payment-element" />
+      <PaymentElement id="payment-element" options={{
+        fields: {
+          billingDetails: {
+            email: 'auto',
+            name: 'auto',
+            phone: 'never',
+            address: {
+              city: 'never',
+              postalCode: 'never',
+              line1: 'never',
+              line2: 'never',
+              state: 'never',
+              country: 'auto'
+            }
+          }
+        }
+      }} />
       <div style={{ marginTop: '16px' }}>
         <Button fullWidth
                 color={'primary'}
