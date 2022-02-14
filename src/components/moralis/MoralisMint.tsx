@@ -8,6 +8,7 @@ import { useWeb3React } from '@web3-react/core'
 import { ethers } from 'ethers'
 import { CHAINS } from './chainsConfig'
 import dynamic from 'next/dynamic'
+import { getPurchaseEventData } from './eventHelper'
 
 const MoralisStripePayNow = dynamic(() => import('./MoralisStripePayNow'), {
   ssr: false
@@ -48,13 +49,16 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
       const currentCost = content.sale === 'whitelist'
         ? content.price_whitelist as string
         : content.price as string
+
       const value = ethers.utils.parseEther(currentCost).mul(selectedAmount)
-      window.gtag &&
-      gtag('event', 'begin_checkout', {
-        event_category: 'Mint',
-        value: value
+      const { google, facebook } = getPurchaseEventData(content, {
+        currentCost,
+        amount: selectedAmount
       })
-      window.fbq && fbq('track', 'InitiateCheckout', { value })
+
+      window.gtag &&
+      gtag('event', 'begin_checkout', google)
+      window.fbq && fbq('track', 'InitiateCheckout', facebook)
 
       const signer = library.getSigner()
       const merkleProof: { isWhitelisted: boolean, proof: any[] } = content.sale === 'whitelist' ? await fetch('/api/merkle/' + account)
@@ -81,11 +85,8 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
           })
         }
         window.gtag &&
-        gtag('event', 'purchase', {
-          event_category: 'Mint',
-          value: value
-        })
-        window.fbq && fbq('track', 'Purchase', { value })
+        gtag('event', 'purchase', google)
+        window.fbq && fbq('track', 'Purchase', facebook)
 
         setSuccess(true)
       } catch (error: any) {
@@ -207,7 +208,7 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
                                contractToken={content.contract_token}
                                userToken={account}
                                content={content}
-                               chainId={chainId}/>
+                               chainId={chainId} />
         )}
 
       </LmComponentRender>

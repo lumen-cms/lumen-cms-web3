@@ -1908,6 +1908,9 @@ export interface MoralisDataStoryblok {
 
 export interface MoralisMintStoryblok {
   price_fiat?: number;
+  checkout_content?: any;
+  stripe_btn_style?: ButtonStoryblok[];
+  return_url?: string;
   fallback_insufficient_funds?: (
     | AccordionStoryblok
     | AuthContainerStoryblok
@@ -2195,8 +2198,7 @@ export interface MoralisMintStoryblok {
     | TimelineStoryblok
     | ToolbarNaviButtonStoryblok
   )[];
-  stripe_btn_style?: ButtonStoryblok[];
-  return_url?: string;
+  price_in_usd?: number;
   _uid: string;
   component: "moralis_mint";
   [k: string]: any;
