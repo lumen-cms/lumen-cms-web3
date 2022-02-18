@@ -25,7 +25,7 @@ export default function MoralisAuthContainer({ content }: MoralisAuthContainerPr
   const data_values = 'balanceOf'
   const {
     data, isValidating
-  } = useSWR((contract_token) ? [`/api/contract/${contract_token}`, selectedChain.id, data_values, account] : null, {
+  } = useSWR((contract_token && account) ? [`/api/contract/${contract_token}`, selectedChain.id, data_values, account] : null, {
     fetcher: web3DataFetcher,
     revalidateOnReconnect: false,
     revalidateOnFocus: false,
@@ -36,7 +36,7 @@ export default function MoralisAuthContainer({ content }: MoralisAuthContainerPr
     return null
   }
   if (isValidating) {
-    return <Skeleton variant={'rect'} height={100}  />
+    return <Skeleton variant={'rect'} height={100} />
   }
   if (show_only_not_logged_in && !account) {
     return (
