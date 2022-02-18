@@ -7,6 +7,7 @@ type GetContractDataProps = {
   token: string
   chain?: string | number
   functions?: string
+  userToken?: string
 }
 const valueParser = (val: any) => {
   const value = val?.[0]
@@ -19,7 +20,7 @@ const valueParser = (val: any) => {
 }
 
 export const getContractData = async ({
-  token, chain, functions
+  token, chain, functions, userToken
 }: GetContractDataProps) => {
   const functionNames = (functions || '').split(',').map(i => i.trim())
   if (!functionNames.length) {
@@ -31,6 +32,14 @@ export const getContractData = async ({
   const data = await Promise.all(functionNames.map(async func => {
     try {
       if (typeof contract.functions[func] === 'function') {
+        if (func === 'balanceOf') {
+          if (!userToken) {
+            console.log('user token is missing')
+            return
+          }
+          const val = await contract.functions[func](userToken)
+          return valueParser(val)
+        }
         const functionValue = await contract.functions[func]()
         return valueParser(functionValue)
       } else {

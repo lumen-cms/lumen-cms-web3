@@ -2,20 +2,8 @@ import { MoralisDataStoryblok } from '../../typings/__generated__/components-sch
 import { CHAINS } from './chainsConfig'
 import useSWR from 'swr'
 import { renderRichText } from 'lumen-cms-core/src/components/paragraph/renderRichText'
+import web3DataFetcher from './web3DataFetcher'
 
-
-const fetcher = async (...args: string[]) => {
-  const [path, chain, functions] = args
-  const functionNames = (functions || '').split(',').map(i => i.trim())
-  if (!functionNames.length) {
-    return null
-  }
-  const params = new URLSearchParams()
-  params.append('chain', chain)
-  params.append('functions', functionNames.join(','))
-  const currentPathToApi = path + '?' + params.toString()
-  return fetch(currentPathToApi).then(r => r.json())
-}
 
 type MoralisDataProps = {
   content: MoralisDataStoryblok
@@ -27,7 +15,7 @@ export default function MoralisData({ content }: MoralisDataProps) {
   const {
     data
   } = useSWR((richtext) ? [`/api/contract/${contract_token}`, selectedChain.id, data_values] : null, {
-    fetcher: fetcher
+    fetcher: web3DataFetcher
   })
 
   if (!richtext) {
