@@ -25,7 +25,11 @@ export default function MoralisAuthContainer({ content }: MoralisAuthContainerPr
   const {
     data, isValidating
   } = useSWR((contract_token) ? [`/api/contract/${contract_token}`, selectedChain.id, data_values, account] : null, {
-    fetcher: web3DataFetcher
+    fetcher: web3DataFetcher,
+    revalidateOnReconnect: false,
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+    revalidateOnMount: true
   })
   if (isValidating || (show_only_not_logged_in && account)) {
     return null
