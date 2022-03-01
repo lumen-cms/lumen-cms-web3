@@ -29,10 +29,11 @@ export async function airdropNft({
     )
 
     console.log(`airdrop attempt: Contract: ${contractToken}, Wallet: ${airdropWallet}, Amount: ${amount}, Signer Of Contract: ${signer.address}, RPC: ${rpcAddress}`)
-    await contract.functions.mint(amount, airdropWallet, {
+    const mintTx = await contract.functions.mint(amount, airdropWallet, {
       value: 0
     })
     console.log('airdrop successful', contractToken, airdropWallet, amount)
+    console.log('TX', mintTx)
     return true
   } catch (e: any) {
     console.log('error', contractToken, airdropWallet, amount)
