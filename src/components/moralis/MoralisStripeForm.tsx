@@ -1,6 +1,6 @@
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
-import { useEffect, useState } from 'react'
-import { Button } from '@material-ui/core'
+import { useEffect, useRef, useState } from 'react'
+import { Button, TextField } from '@material-ui/core'
 import { MoralisStripePayNowProps } from './moralisTypings'
 import { renderRichText } from 'lumen-cms-core/src/components/paragraph/renderRichText'
 
@@ -10,7 +10,8 @@ export default function MoralisStripeForm(props: MoralisStripePayNowProps) {
   const { checkout_content, price_fiat } = content
   const stripe = useStripe()
   const elements = useElements()
-
+  const emailRef = useRef<string>('')
+  const [emailError, setEmailError] = useState<boolean>(false)
   const [message, setMessage] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -54,12 +55,16 @@ export default function MoralisStripeForm(props: MoralisStripePayNowProps) {
       // Make sure to disable form submission until Stripe.js has loaded.
       return
     }
-
+    if (!emailRef.current) {
+      setEmailError(true)
+      return
+    }
     setIsLoading(true)
 
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
+        receipt_email: emailRef.current,
         // Make sure to change this to your payment completion page
         return_url: content.return_url
           ? content.return_url.startsWith('http') ? content.return_url : window.location.origin + content.return_url
@@ -95,23 +100,18 @@ export default function MoralisStripeForm(props: MoralisStripePayNowProps) {
       <div className={'lm-checkout__data'}>
         {renderRichText(JSON.parse(stringify))}
       </div>
-      <PaymentElement id="payment-element" options={{
-        fields: {
-          billingDetails: {
-            email: 'auto',
-            name: 'auto',
-            phone: 'never',
-            address: {
-              city: 'never',
-              postalCode: 'never',
-              line1: 'never',
-              line2: 'never',
-              state: 'never',
-              country: 'auto'
-            }
-          }
-        }
-      }} />
+      <TextField
+        fullWidth
+        required
+        variant={'outlined'}
+        size={'small'}
+        margin={'normal'}
+        error={emailError}
+        helperText={emailError ? 'This is required' : undefined}
+        onChange={event => {
+          emailRef.current = event.target.value
+        }} label={'Email'} name={'email'} />
+      <PaymentElement id="payment-element" />
       <div style={{ marginTop: '16px' }}>
         <Button fullWidth
                 color={'primary'}
