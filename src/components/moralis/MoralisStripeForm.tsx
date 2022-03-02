@@ -48,7 +48,6 @@ export default function MoralisStripeForm(props: MoralisStripePayNowProps) {
   }, [stripe])
 
   const handleSubmit = async (e: any) => {
-    debugger
     e.preventDefault()
     if (!stripe || !elements) {
       // Stripe.js has not yet loaded.
