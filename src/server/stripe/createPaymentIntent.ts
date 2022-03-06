@@ -30,7 +30,7 @@ export const createPaymentIntent = async ({
       walletToken: walletToken || '',
       contractToken: contractToken || '',
       nftAmount: `${nftAmount}`,
-      chainId: `${chainId}`
+      chainId: `${chainId}`,
     }
   }
   return await stripe.paymentIntents.create(

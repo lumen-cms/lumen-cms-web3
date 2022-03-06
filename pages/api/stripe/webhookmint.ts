@@ -31,14 +31,15 @@ const webhookApi = async (req: NextApiRequest, res: NextApiResponse) => {
             amount: Number(metadata.nftAmount),
             chainId: metadata.chainId
           })
-          if (typeof dropped !== 'boolean' && dropped?.error) {
+          if (typeof dropped !== 'string' && dropped?.error) {
             res.status(500).send(dropped)
             return
           }
-          if (dropped) {
+          if (typeof dropped === 'string') {
             const newMetadata = {
               ...metadata,
-              airdropped: new Date().toISOString()
+              airdropped: new Date().toISOString(),
+              transactionHash: dropped
             }
             await updatePaymentIntent(paymentId, newMetadata)
             res.status(200).json({ ...newMetadata })

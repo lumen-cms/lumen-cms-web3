@@ -17,5 +17,6 @@ export type MoralisStripePayNowProps = MoralisMintProps & {
   userToken: string
   airdropped?: string
   chainId: number
+  transactionHash?: string
 }
 
