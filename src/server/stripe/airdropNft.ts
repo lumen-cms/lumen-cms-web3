@@ -1,7 +1,6 @@
 import { ethers } from 'ethers'
 import { rpcAddresses } from '../../lib/rpc'
 import { JsonRpcProvider } from '@ethersproject/providers'
-import fetch from 'node-fetch'
 
 type AirdropProps = {
   airdropWallet: string;
