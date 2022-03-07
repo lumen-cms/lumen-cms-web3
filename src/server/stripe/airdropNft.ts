@@ -30,9 +30,9 @@ class UpdatedJsonRpcProvider extends JsonRpcProvider {
   public async getFeeData(): Promise<ethers.providers.FeeData> {
     const feeData: FeeDataEIP1559 = await getPolygon1559FeeData()
     const data = {
-      maxFeePerGas: ethers.BigNumber.from((feeData.maxFee * Math.pow(10, 9)).toFixed(0)),
-      maxPriorityFeePerGas: ethers.BigNumber.from((feeData.maxPriorityFee * Math.pow(10, 9)).toFixed(0)),
-      gasPrice: ethers.BigNumber.from((feeData.maxFee * Math.pow(10, 9)).toFixed(0))
+      maxFeePerGas: ethers.utils.parseUnits(String(feeData.maxFee), 9),
+      maxPriorityFeePerGas: ethers.utils.parseUnits(String(feeData.maxPriorityFee), 9),
+      gasPrice: ethers.utils.parseUnits(String(feeData.maxFee), 9)
     }
     return data
   }
