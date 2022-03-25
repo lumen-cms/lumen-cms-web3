@@ -2,7 +2,7 @@ import { FC } from 'react'
 import { Elements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 import useSWR from 'swr'
-import { useTheme } from '@material-ui/core'
+import { useTheme } from '@mui/material'
 import { MoralisStripePayNowProps } from './moralisTypings'
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid

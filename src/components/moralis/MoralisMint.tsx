@@ -1,7 +1,7 @@
 import { ButtonStoryblok, FlexRowStoryblok } from '../../typings/__generated__/components-schema'
 import { LmComponentRender } from '@LmComponentRender'
-import { MenuItem, TextField } from '@material-ui/core'
-import { Alert } from '@material-ui/lab'
+import { MenuItem, TextField } from '@mui/material'
+import { Alert } from '@mui/material';
 import { useMemo, useRef, useState } from 'react'
 import { MoralisMintProps } from './moralisTypings'
 import { useWeb3React } from '@web3-react/core'

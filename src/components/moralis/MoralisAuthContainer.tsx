@@ -4,7 +4,7 @@ import { LmComponentRender } from '@LmComponentRender'
 import { CHAINS } from './chainsConfig'
 import useSWR from 'swr'
 import web3DataFetcher from './web3DataFetcher'
-import Skeleton from '@material-ui/lab/Skeleton'
+import Skeleton from '@mui/material/Skeleton'
 
 type MoralisAuthContainerProps = {
   content: MoralisAuthContainerStoryblok
@@ -36,7 +36,7 @@ export default function MoralisAuthContainer({ content }: MoralisAuthContainerPr
     return null
   }
   if (isValidating) {
-    return <Skeleton variant={'rect'} height={100} />
+    return <Skeleton variant="rectangular" height={100} />;
   }
   if (show_only_not_logged_in && !account) {
     return (

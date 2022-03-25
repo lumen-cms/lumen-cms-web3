@@ -1,6 +1,6 @@
 import { LmComponentRender } from '@LmComponentRender'
 import { useState } from 'react'
-import { Dialog, DialogContent, Toolbar } from '@material-ui/core'
+import { Dialog, DialogContent, Toolbar } from '@mui/material'
 import MoralisStripeForm from './MoralisStripeForm'
 import MoralisStripeProvider from './MoralisStripeProvider'
 import { ButtonStoryblok } from '../../typings/__generated__/components-schema'

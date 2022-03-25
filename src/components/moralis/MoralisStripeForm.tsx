@@ -1,6 +1,6 @@
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { useEffect, useRef, useState } from 'react'
-import { Button, TextField } from '@material-ui/core'
+import { Button, TextField } from '@mui/material'
 import { MoralisStripePayNowProps } from './moralisTypings'
 import { renderRichText } from 'lumen-cms-core/src/components/paragraph/renderRichText'
 

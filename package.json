@@ -1,6 +1,6 @@
 {
   "name": "lumen-cms-web3",
-  "version": "0.4.9",
+  "version": "1.0.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -26,11 +26,11 @@
     "stripe": "^8.202.0"
   },
   "peerDependencies": {
-    "lumen-cms-core": ">=0.100.0"
+    "lumen-cms-core": ">=1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
-    "@material-ui/core": "^4.12.3",
+    "@mui/material": "^5.5.2",
     "@next/bundle-analyzer": "12.0.8",
     "@storybook/addon-actions": "^6.3.12",
     "@storybook/addon-essentials": "^6.3.12",
@@ -51,7 +51,7 @@
     "eslint": "7",
     "eslint-config-next": "12.0.3",
     "jest": "^27.5.0",
-    "lumen-cms-core": "0.103.1",
+    "lumen-cms-core": "1.0.2",
     "next": "12.1.0",
     "postcss": "^8.3.11",
     "react": "17.0.2",
