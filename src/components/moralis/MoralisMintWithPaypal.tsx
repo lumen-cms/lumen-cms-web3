@@ -6,10 +6,21 @@ import { MoralisMintProps } from './moralisTypings'
 import { useWeb3React } from '@web3-react/core'
 import { ethers } from 'ethers'
 import { CHAINS } from './chainsConfig'
+import dynamic from 'next/dynamic'
 import { getMintErrorMessage, getPurchaseEventData, MintError } from './eventHelper'
 
+const MoralisStripePayNow = dynamic(() => import('./MoralisStripePayNow'), {
+  ssr: false
+})
+
+
 const envAbi = process.env.NEXT_PUBLIC_ABI ? JSON.parse(process.env.NEXT_PUBLIC_ABI) : null
-export default function MoralisMint({ content }: MoralisMintProps): JSX.Element {
+/**
+ * Not general in use. To enable overwrite default function
+ * @param content
+ * @constructor
+ */
+export default function MoralisMintWithPaypal({ content }: MoralisMintProps): JSX.Element {
   const { account, chainId, library } = useWeb3React()
   const abi = envAbi || content.moralis_mint_data?.abi
   const amountRef = useRef<number>(1)
@@ -170,6 +181,14 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
             }
           }}
         />
+        {process.env.NEXT_PUBLIC_STRIPE_PK && content.price_fiat && (
+          <MoralisStripePayNow mintAmount={() => amountRef.current}
+                               contractToken={content.contract_token}
+                               userToken={account}
+                               content={content}
+                               chainId={chainId} />
+        )}
+
       </LmComponentRender>
       {success && (
         <div className={'py-3'}>
