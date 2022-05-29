@@ -3,18 +3,26 @@ import { LmComponentRender } from '@LmComponentRender'
 import { Alert, MenuItem, TextField } from '@mui/material'
 import { useMemo, useRef, useState } from 'react'
 import { MoralisMintProps } from './moralisTypings'
-import { useWeb3React } from '@web3-react/core'
 import { ethers } from 'ethers'
-import { CHAINS } from './chainsConfig'
 import { getMintErrorMessage, getPurchaseEventData, MintError } from './eventHelper'
+import useWhitelist from './hooks/useWhitelist'
+import Skeleton from '@mui/material/Skeleton'
 
 const envAbi = process.env.NEXT_PUBLIC_ABI ? JSON.parse(process.env.NEXT_PUBLIC_ABI) : null
 export default function MoralisMint({ content }: MoralisMintProps): JSX.Element {
-  const { account, chainId, library } = useWeb3React()
+  const {
+    account,
+    error: errorConnect,
+    library,
+    signed,
+    isValidatingWhitelist,
+    maxAmountWhitelist,
+    isCorrectChain,
+    selectedChain
+  } = useWhitelist(content)
   const abi = envAbi || content.moralis_mint_data?.abi
   const amountRef = useRef<number>(1)
-  const selectedChain = CHAINS[content.chain || 'mainnet']
-  const isCorrectChain = selectedChain?.id === chainId
+
   const currentCost = content.sale === 'whitelist'
     ? content.price_whitelist as string
     : content.price as string
@@ -52,6 +60,10 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
     }
   }
 
+  if (isValidatingWhitelist) {
+    return <Skeleton />
+  }
+
   if (!account || !library) {
     return (
       <>
@@ -65,14 +77,14 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
         to <strong><i>{selectedChain.displayName}</i></strong></div>
     )
   }
-  if (error) {
-    const errorMessage = error.message
+  if (error || errorConnect) {
+    const errorMessage = error?.message || errorConnect?.message
     let customError
-    if (error.code === 'not_whitelisted') {
+    if (error?.code === 'not_whitelisted') {
       customError = content.fallback_not_whitelisted
-    } else if (error.code === 'sale_not_started') {
+    } else if (error?.code === 'sale_not_started') {
       customError = content.fallback_not_started
-    } else if (error.code === 'insufficient_fund') {
+    } else if (error?.code === 'insufficient_fund') {
       customError = content.fallback_insufficient_funds
     }
     return (
@@ -124,13 +136,8 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
               const value = ethers.utils.parseEther(currentCost).mul(selectedAmount)
               trackEvent()
               const signer = library.getSigner()
-              const merkleProof: { isWhitelisted: boolean, proof: any[] } = content.sale === 'whitelist'
-                ? await fetch('/api/merkle/' + account)
-                  .then((r) => r.json())
-                : {
-                  isWhitelisted: false
-                }
-              if (content.sale === 'whitelist' && !merkleProof.isWhitelisted) {
+
+              if (content.sale === 'whitelist' && !signed) {
                 setError({
                   message: 'You are not whitelisted. If you are make sure you have the right account connected.',
                   code: 'not_whitelisted'
@@ -143,10 +150,10 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
                   await contract.functions.mint(selectedAmount, account, {
                     value: value
                   })
+                } else if (process.env.NEXT_PUBLIC_MINT_CALL = 'whitelist-only') {
+                  await contract.functions.mint(selectedAmount, signed, maxAmountWhitelist)
                 } else {
-                  await contract.functions.mint(selectedAmount, merkleProof.isWhitelisted ? merkleProof.proof : [ethers.utils.keccak256('0x00')], {
-                    value: value
-                  })
+                  // TODO
                 }
                 trackEvent(true)
                 setSuccess(true)
