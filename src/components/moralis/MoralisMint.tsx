@@ -150,7 +150,7 @@ export default function MoralisMint({ content }: MoralisMintProps): JSX.Element 
                   await contract.functions.mint(selectedAmount, account, {
                     value: value
                   })
-                } else if (process.env.NEXT_PUBLIC_MINT_CALL = 'whitelist-only') {
+                } else if (process.env.NEXT_PUBLIC_MINT_CALL === 'whitelistonly') {
                   await contract.functions.mint(selectedAmount, signed, maxAmountWhitelist)
                 } else {
                   // TODO

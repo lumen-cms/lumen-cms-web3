@@ -1,7 +1,0 @@
-{
-  "presets": [
-    "next/babel"
-  ],
-  "plugins": [],
-  "include": "node_modules/lumen-cms-core"
-}
